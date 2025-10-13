@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:infinity/Provider/login_provider.dart';
 import 'package:infinity/View/Auths/Login_screen.dart';
 import 'package:infinity/View/home/dashboard_screen.dart';
+import 'package:provider/provider.dart';
+
+import 'Provider/dashboard_provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(
+    MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_)=>LoginProvider()),
+      ChangeNotifierProvider(create: (_)=>DashBoardProvider()),
+    ],
+    child: MyApp(),)
+  );
 }
 
 class MyApp extends StatelessWidget {
