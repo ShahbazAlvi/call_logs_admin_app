@@ -1,14 +1,14 @@
 // import 'package:fl_chart/fl_chart.dart';
 // import 'package:flutter/material.dart';
 //
-// class MonthlyTrendsChart extends StatelessWidget {
+// class WeeklyVolumeChart extends StatelessWidget {
 //   final int totalCalls;
-//   final List<Map<String, dynamic>> monthlyData;
+//   final List<Map<String, dynamic>> weeklyData;
 //
-//   const MonthlyTrendsChart({
+//   const WeeklyVolumeChart({
 //     super.key,
 //     required this.totalCalls,
-//     required this.monthlyData,
+//     required this.weeklyData,
 //   });
 //
 //   @override
@@ -27,7 +27,7 @@
 //             mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //             children: [
 //               const Text(
-//                 "Monthly Call Trends",
+//                 "Weekly Call Volume",
 //                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
 //               ),
 //               TextButton(
@@ -42,7 +42,7 @@
 //           const SizedBox(height: 4),
 //           // Total Calls
 //           Text(
-//             "$totalCalls calls",
+//             "$totalCalls calls this week",
 //             style: const TextStyle(
 //               fontSize: 24,
 //               fontWeight: FontWeight.bold,
@@ -60,7 +60,7 @@
 //                 gridData: FlGridData(
 //                   show: true,
 //                   drawVerticalLine: false,
-//                   horizontalInterval: 150,
+//                   horizontalInterval: 100,
 //                 ),
 //                 titlesData: FlTitlesData(
 //                   bottomTitles: AxisTitles(
@@ -68,13 +68,13 @@
 //                       showTitles: true,
 //                       getTitlesWidget: (value, meta) {
 //                         int index = value.toInt();
-//                         if (index < 0 || index >= monthlyData.length) {
+//                         if (index < 0 || index >= weeklyData.length) {
 //                           return const SizedBox();
 //                         }
 //                         return Padding(
 //                           padding: const EdgeInsets.only(top: 4.0),
 //                           child: Text(
-//                             monthlyData[index]["month"],
+//                             weeklyData[index]["day"],
 //                             style: const TextStyle(
 //                                 fontSize: 10, color: Colors.black54),
 //                           ),
@@ -83,7 +83,7 @@
 //                     ),
 //                   ),
 //                   leftTitles: AxisTitles(
-//                     sideTitles: SideTitles(showTitles: true, interval: 150),
+//                     sideTitles: SideTitles(showTitles: true, interval: 100),
 //                   ),
 //                   rightTitles: AxisTitles(
 //                     sideTitles: SideTitles(showTitles: false),
@@ -92,7 +92,7 @@
 //                     sideTitles: SideTitles(showTitles: false),
 //                   ),
 //                 ),
-//                 barGroups: monthlyData.asMap().entries.map((entry) {
+//                 barGroups: weeklyData.asMap().entries.map((entry) {
 //                   int index = entry.key;
 //                   final item = entry.value;
 //                   return BarChartGroupData(
@@ -101,7 +101,7 @@
 //                       BarChartRodData(
 //                         toY: (item["count"] ?? 0).toDouble(),
 //                         color: Colors.blue,
-//                         width: 12,
+//                         width: 14,
 //                         borderRadius: BorderRadius.circular(4),
 //                       ),
 //                     ],
@@ -118,14 +118,14 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-class MonthlyTrendsChart extends StatelessWidget {
+class WeeklyVolumeChart extends StatelessWidget {
   final int totalCalls;
-  final List<Map<String, dynamic>> monthlyData;
+  final List<Map<String, dynamic>> weeklyData;
 
-  const MonthlyTrendsChart({
+  const WeeklyVolumeChart({
     super.key,
     required this.totalCalls,
-    required this.monthlyData,
+    required this.weeklyData,
   });
 
   @override
@@ -144,7 +144,7 @@ class MonthlyTrendsChart extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                "Monthly Call Trends",
+                "Weekly Call Volume",
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
               ),
               TextButton(
@@ -159,7 +159,7 @@ class MonthlyTrendsChart extends StatelessWidget {
           const SizedBox(height: 4),
           // Total Calls
           Text(
-            "$totalCalls calls",
+            "$totalCalls calls this week",
             style: const TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.bold,
@@ -177,7 +177,7 @@ class MonthlyTrendsChart extends StatelessWidget {
                 gridData: FlGridData(
                   show: true,
                   drawVerticalLine: false,
-                  horizontalInterval: 150,
+                  horizontalInterval: 100,
                   getDrawingHorizontalLine: (value) {
                     return FlLine(
                       color: Colors.grey.withOpacity(0.3),
@@ -191,13 +191,13 @@ class MonthlyTrendsChart extends StatelessWidget {
                       showTitles: true,
                       getTitlesWidget: (value, meta) {
                         int index = value.toInt();
-                        if (index < 0 || index >= monthlyData.length) {
+                        if (index < 0 || index >= weeklyData.length) {
                           return const SizedBox();
                         }
                         return Padding(
                           padding: const EdgeInsets.only(top: 4.0),
                           child: Text(
-                            monthlyData[index]["month"],
+                            weeklyData[index]["day"],
                             style: const TextStyle(
                               fontSize: 10,
                               color: Colors.black54,
@@ -211,7 +211,7 @@ class MonthlyTrendsChart extends StatelessWidget {
                   leftTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
-                      interval: 150,
+                      interval: 100,
                       getTitlesWidget: (value, meta) {
                         return Padding(
                           padding: const EdgeInsets.only(right: 8.0),
@@ -236,7 +236,7 @@ class MonthlyTrendsChart extends StatelessWidget {
                   ),
                 ),
                 barTouchData: BarTouchData(enabled: false),
-                barGroups: monthlyData.asMap().entries.map((entry) {
+                barGroups: weeklyData.asMap().entries.map((entry) {
                   int index = entry.key;
                   final item = entry.value;
                   return BarChartGroupData(
@@ -245,7 +245,7 @@ class MonthlyTrendsChart extends StatelessWidget {
                       BarChartRodData(
                         toY: (item["count"] ?? 0).toDouble(),
                         color: Colors.blue,
-                        width: 12,
+                        width: 14,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ],
@@ -263,12 +263,11 @@ class MonthlyTrendsChart extends StatelessWidget {
 
   double _calculateMaxY() {
     double maxValue = 0;
-    for (var item in monthlyData) {
+    for (var item in weeklyData) {
       double value = (item["count"] ?? 0).toDouble();
       if (value > maxValue) maxValue = value;
     }
     // Add some padding to the max value for better visualization
-    // Round up to the nearest 150 for clean intervals
-    return ((maxValue * 1.2) / 150).ceil() * 150.0;
+    return (maxValue * 1.2).ceilToDouble();
   }
 }

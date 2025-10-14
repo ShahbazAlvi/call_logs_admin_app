@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:infinity/View/home/weekly_charts.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -26,12 +27,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await dashboardProvider.Performance_Summary();
       await dashboardProvider.fetchCalendarMeetings();
       await dashboardProvider..fetchMonthlyTrends();
+      await dashboardProvider.fetchWeeklyTrends();
     });
   }
 
   Widget build(BuildContext context) {
     final provider = Provider.of<DashBoardProvider>(context);
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child:provider.isLoading
             ? const Center(child: CircularProgressIndicator()):
@@ -41,48 +44,68 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Wrap(
-                  spacing: 16,
-                  runSpacing: 16,
-                  children: [
-                    AnimatedDashboardCard(icon: Icons.person, title:'Customer', count:'23', bcolor:Colors.green),
-                    AnimatedDashboardCard(icon: Icons.shop, title:'Products', count:'23', bcolor:Colors.red),
-                    AnimatedDashboardCard(icon: Icons.people_rounded, title:'Staff', count:'23', bcolor:Colors.blue),
-                    AnimatedDashboardCard(icon: Icons.person, title:'Transactions', count:'23', bcolor:Colors.orange)
-        
-                  ],
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF5F8FF),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Wrap(
+                      spacing: 16,
+                      runSpacing: 16,
+                      children: [
+                        AnimatedDashboardCard(icon: Icons.person, title:'Customer', count:'23', bcolor:Colors.green),
+                        AnimatedDashboardCard(icon: Icons.shop, title:'Products', count:'23', bcolor:Colors.red),
+                        AnimatedDashboardCard(icon: Icons.people_rounded, title:'Staff', count:'23', bcolor:Colors.blue),
+                        AnimatedDashboardCard(icon: Icons.person, title:'Transactions', count:'23', bcolor:Colors.orange)
+
+                      ],
+                    ),
+                  ),
                 ),
-                SizedBox(
-                  height: 250,
-                  child: PieChart(
-                    PieChartData(
-                      sectionsSpace: 3,
-                      centerSpaceRadius: 60,
-                      sections: provider.chartData
-                          .map(
-                            (item) => PieChartSectionData(
-                          color: item["color"],
-                          value: item["value"],
-                          title: "${item["value"].toInt()}", // show 576, 577
-                          radius: 40,
-                          titleStyle: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                SizedBox(height: 20,),
+                Text("Performance Summary",style: TextStyle(fontWeight: FontWeight.bold),),
+                Container(
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFF5F8FF),
+                      borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: SizedBox(
+                    height: 250,
+                    child: PieChart(
+                      PieChartData(
+                        sectionsSpace: 3,
+                        centerSpaceRadius: 60,
+                        sections: provider.chartData
+                            .map(
+                              (item) => PieChartSectionData(
+                            color: item["color"],
+                            value: item["value"],
+                            title: "${item["value"].toInt()}", // show 576, 577
+                            radius: 40,
+                            titleStyle: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                      )
-                          .toList(),
+                        )
+                            .toList(),
+                      ),
                     ),
                   ),
                 ),
 
                 const SizedBox(height: 30),
                 _buildLegend(provider.chartData),
+                SizedBox(height: 20),
+                Text("Follow-up Meeting",style: TextStyle(fontWeight: FontWeight.bold),),
                 Padding(
                   padding: EdgeInsets.all(8.0),
                   child: CalendarWidget(), // 👈 use calendar here
                 ),
+                SizedBox(height: 20),
                 Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: provider.monthlyTrends.isEmpty
@@ -92,6 +115,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     monthlyData: provider.monthlyTrends,
                   ),
                 ),
+                SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: WeeklyVolumeChart(
+                totalCalls: provider.totalWeeklyCalls,
+                weeklyData: provider.weeklyData,),
+            )
               ],
             ),
           ),
@@ -106,17 +136,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
       list.fold(0, (sum, e) => sum + (e["value"] as double));
   Widget _buildLegend(List<Map<String, dynamic>> data) {
     return Wrap(
-      alignment: WrapAlignment.center,
+      crossAxisAlignment: WrapCrossAlignment.start,
+      alignment: WrapAlignment.start,
       spacing: 20,
       runSpacing: 10,
       children: data
           .map((item) => Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            width: 16,
-            height: 16,
-            color: item["color"],
+          CircleAvatar(
+            backgroundColor: item["color"],
+            radius: 5,
+
           ),
           const SizedBox(width: 8),
           Text(
@@ -164,10 +195,7 @@ class _AnimatedDashboardCardState extends State<AnimatedDashboardCard> {
   }
 }
 
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-// import 'package:table_calendar/table_calendar.dart';
-// import '../../Provider/calendar_provider.dart';
+
 
 class CalendarWidget extends StatefulWidget {
   const CalendarWidget({super.key});
@@ -187,7 +215,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     return Container(
       padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.white,
+      //  color: Colors.white,
+        color: const Color(0xFFF5F8FF),
         boxShadow: [
           BoxShadow(color: Colors.grey.shade300, blurRadius: 5, spreadRadius: 2)
         ],

@@ -5,12 +5,16 @@ import 'package:infinity/View/home/dashboard_screen.dart';
 import 'package:provider/provider.dart';
 
 import 'Provider/dashboard_provider.dart';
+import 'Provider/product/product_provider.dart';
+import 'Provider/staff/StaffProvider.dart';
 
 void main() {
   runApp(
     MultiProvider(providers: [
+      ChangeNotifierProvider(create: (_)=>ProductProvider()),
       ChangeNotifierProvider(create: (_)=>LoginProvider()),
       ChangeNotifierProvider(create: (_)=>DashBoardProvider()),
+      ChangeNotifierProvider(create: (_) => StaffProvider()),
     ],
     child: MyApp(),)
   );

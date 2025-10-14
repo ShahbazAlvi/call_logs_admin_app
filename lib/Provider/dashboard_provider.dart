@@ -13,6 +13,8 @@ class DashBoardProvider with  ChangeNotifier{
   double totalMeetings=0;
   int totalCalls = 0;
   List<Map<String, dynamic>> monthlyTrends = [];
+  List<Map<String, dynamic>> weeklyData = [];
+  int totalWeeklyCalls = 0;
 
   Future<void>Performance_Summary()async{
     final prefs = await SharedPreferences.getInstance();
@@ -46,10 +48,11 @@ class DashBoardProvider with  ChangeNotifier{
           final data = result["data"];
           print("Parsed Data: $data");
 
-          successRate = (data["successRate"] ?? 0).toDouble();
-          pendingCalls = (data["pendingCalls"] ?? 0).toDouble();
-          followUps = (data["followUps"] ?? 0).toDouble();
-          totalMeetings = (data["totalMeetings"] ?? 0).toDouble();
+          successRate = double.tryParse(data["successRate"].toString()) ?? 0.0;
+          pendingCalls = double.tryParse(data["pendingCalls"].toString()) ?? 0.0;
+          followUps = double.tryParse(data["followUps"].toString()) ?? 0.0;
+          totalMeetings = double.tryParse(data["totalMeetings"].toString()) ?? 0.0;
+
         } else {
           print("API returned success = false");
         }
@@ -68,7 +71,7 @@ class DashBoardProvider with  ChangeNotifier{
   List<Map<String, dynamic>> get chartData => [
     {"title": "Success Rate", "value": successRate, "color": const Color(0xFF4CAF50)},
     {"title": "Pending Calls", "value": pendingCalls, "color": const Color(0xFF2196F3)},
-    {"title": "Follow Ups", "value": followUps, "color": const Color(0xFFFFEB3B)},
+    {"title": "Follow Ups", "value": followUps, "color": Colors.orange},
     {"title": "Total Meetings", "value": totalMeetings, "color": const Color(0xFFF44336)},
   ];
   List<DateTime> meetingDates = [];
@@ -173,7 +176,7 @@ class DashBoardProvider with  ChangeNotifier{
 
 
 
-  Future<void> fetchweeklyTrends() async {
+  Future<void> fetchWeeklyTrends() async {
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');
     if (token == null) {
@@ -181,7 +184,7 @@ class DashBoardProvider with  ChangeNotifier{
       return;
     }
 
-    const url = 'https://call-logs-backend.vercel.app/api/dashboard/monthly-trends';
+    const url = 'https://call-logs-backend.vercel.app/api/dashboard/weekly-volume';
     try {
       isLoading = true;
       notifyListeners();
@@ -198,9 +201,16 @@ class DashBoardProvider with  ChangeNotifier{
       debugPrint("📦 Response: ${response.body}");
 
       if (response.statusCode == 200) {
-        final resultweekly = jsonDecode(response.body);
-        if (resultweekly["success"] == true) {
-          monthlyTrends = List<Map<String, dynamic>>.from(resultweekly["data"]);
+        final result = jsonDecode(response.body);
+        if (result["success"] == true && result["data"] != null) {
+          weeklyData = List<Map<String, dynamic>>.from(result["data"]);
+          totalWeeklyCalls = weeklyData.fold<int>(
+            0,
+                (sum, item) => sum + ((item["count"] ?? 0) as int),
+          );
+
+        } else {
+          debugPrint("⚠️ Invalid response data format");
         }
       } else {
         debugPrint("⚠️ Error: ${response.statusCode}");

@@ -6,6 +6,8 @@ import 'package:http/http.dart'as http;
 import 'package:infinity/View/home/dashboard_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../View/bottombar/BottomBar.dart';
+
 class LoginProvider with ChangeNotifier{
 
   bool isLoading = false;
@@ -45,7 +47,7 @@ class LoginProvider with ChangeNotifier{
           await prefs.setString('user', jsonEncode(data["user"]));
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => DashboardScreen()),
+            MaterialPageRoute(builder: (context) => BottombarScreen()),
           );
         }
         else{
