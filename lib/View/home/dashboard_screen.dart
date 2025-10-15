@@ -7,6 +7,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 
 import '../../Provider/dashboard_provider.dart';
+import '../Meeting_calender/MeetingCalender.dart';
 import '../monthly chats.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -35,6 +36,91 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final provider = Provider.of<DashBoardProvider>(context);
     return Scaffold(
       backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text("Dashboard"),
+        backgroundColor: Colors.indigo,
+      ),
+
+      // ✅ Drawer Menu Added
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            const DrawerHeader(
+              decoration: BoxDecoration(
+                color: Colors.indigo,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CircleAvatar(
+                    radius: 28,
+                    backgroundColor: Colors.white,
+                    child: Icon(Icons.person, color: Colors.indigo, size: 35),
+                  ),
+                  SizedBox(height: 10),
+                  Text(
+                    'Welcome User',
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.dashboard, color: Colors.indigo),
+              title: const Text('Dashboard'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.calendar_month, color: Colors.indigo),
+              title: const Text('Calendar'),
+    //           {
+    //             Navigator.pop(context);
+    //           showDialog(
+    //           context: context,
+    //           builder: (_) => AlertDialog(
+    //             content: SizedBox(
+    //               height: 400,
+    //               width: 400,
+    //               child: CalendarWidget(), // ✅ Reuse your existing calendar
+    //             ),
+    //           ),
+    //         );
+    // },
+              onTap: () {
+                Navigator.push(context,MaterialPageRoute(builder: (context)=>UpcomingMeetingsScreen()));
+              }
+            ),
+
+            ListTile(
+              leading: const Icon(Icons.settings, color: Colors.indigo),
+              title: const Text('Settings'),
+              onTap: () {
+                Navigator.pop(context);
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => const SettingsScreen()),
+                // );
+              },
+            ),
+
+            const Divider(),
+
+            ListTile(
+              leading: const Icon(Icons.logout, color: Colors.red),
+              title: const Text('Logout'),
+              onTap: () {
+                Navigator.pop(context);
+                // Add logout logic here if needed
+              },
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child:provider.isLoading
             ? const Center(child: CircularProgressIndicator()):

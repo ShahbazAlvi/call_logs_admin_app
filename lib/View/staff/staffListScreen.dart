@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:infinity/View/staff/create_staff.dart';
 import 'package:provider/provider.dart';
 
 import '../../Provider/staff/StaffProvider.dart';
@@ -28,6 +29,9 @@ class _StaffScreenState extends State<StaffScreen> {
       appBar: AppBar(
         title: const Text('Staff Members'),
         centerTitle: true,
+        actions: [IconButton(onPressed: (){
+          Navigator.push(context,MaterialPageRoute(builder: (context)=>StaffCreateScreen()));
+        }, icon:Icon(Icons.add))],
       ),
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -44,40 +48,86 @@ class _StaffScreenState extends State<StaffScreen> {
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
-            child: ListTile(
-              leading: CircleAvatar(
-                radius: 30,
-                backgroundImage:
-                NetworkImage(staff.image?.url ?? ''),
-                backgroundColor: Colors.grey[200],
-              ),
-              title: Text(
-                staff.username ?? '',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              subtitle: Column(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(staff.department ?? '',
-                      style: const TextStyle(color: Colors.black54)),
-                  Text(staff.email ?? '',
-                      style: const TextStyle(color: Colors.black54)),
-                  Text(staff.number ?? '',
-                      style: const TextStyle(color: Colors.black54)),
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: NetworkImage(staff.image?.url ?? ''),
+                    backgroundColor: Colors.grey[200],
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          staff.username ?? '',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(staff.department ?? '',
+                            style: const TextStyle(color: Colors.black54)),
+                        Text(staff.email ?? '',
+                            style: const TextStyle(color: Colors.black54)),
+                        Text(staff.number ?? '',
+                            style: const TextStyle(color: Colors.black54)),
+                      ],
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(Icons.edit, color: Colors.blue),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () async {
+                          final confirm = await showDialog<bool>(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Delete Staff'),
+                              content: const Text('Are you sure you want to delete this staff?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, false),
+                                  child: const Text('No'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, true),
+                                  child: const Text('Yes'),
+                                ),
+                              ],
+                            ),
+                          );
+
+                          // If user pressed "Yes"
+                          if (confirm == true) {
+                            provider.DeleteStaff("${staff.sId}");
+
+                            // Optional: show success message/snackbar
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('staff deleted successfully!'),
+                                backgroundColor: Colors.green,
+                              ),
+                            );
+                          }
+                        },
+                      )
+                    ],
+                  ),
                 ],
               ),
-              trailing: Column(
-                children: [
-                  IconButton(onPressed: (){}, icon: Icon(Icons.delete,color: Colors.red,)),
-                  IconButton(onPressed: (){}, icon: Icon(Icons.edit,color: Colors.blue,)),
-
-                ],
-              )
             ),
           );
+
         },
       ),
     );

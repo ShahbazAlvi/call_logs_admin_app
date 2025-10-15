@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../Customer/customer_list.dart';
 import '../home/dashboard_screen.dart';
 import '../products/product_screen.dart';
 import '../staff/staffListScreen.dart';
@@ -19,7 +20,7 @@ class _BottombarScreenState extends State<BottombarScreen> {
     DashboardScreen(),
     ProductScreen(),
     StaffScreen(),
-    const Center(child: Text("customer")),
+    CompanyListScreen(),
   ];
 
   void _onItemTapped(int index) {
