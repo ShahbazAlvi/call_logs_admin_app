@@ -19,7 +19,10 @@ class StaffCreateScreen extends StatelessWidget {
     final staffProvider = Provider.of<StaffProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Staff')),
+      appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.white),
+          backgroundColor: Colors.indigo,
+          title: Center(child: const Text('Add Staff',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),))),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Form(

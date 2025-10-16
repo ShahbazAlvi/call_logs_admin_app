@@ -27,7 +27,9 @@ class _StaffScreenState extends State<StaffScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Staff Members'),
+        backgroundColor: Colors.indigo,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text('Staff Members',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
         centerTitle: true,
         actions: [IconButton(onPressed: (){
           Navigator.push(context,MaterialPageRoute(builder: (context)=>StaffCreateScreen()));

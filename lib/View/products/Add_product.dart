@@ -37,7 +37,8 @@ class _AddProductScreenState extends State<AddProductScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Product'),
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.indigo,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -53,7 +54,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
                     height: 150,
                     width: 150,
                     color: Colors.grey[200],
-                    child: const Icon(Icons.add_a_photo, size: 50),
+                    child: const Icon(Icons.camera_alt, size: 50),
                   )
                       : Image.file(_imageFile!, height: 150, width: 150, fit: BoxFit.cover),
                 ),

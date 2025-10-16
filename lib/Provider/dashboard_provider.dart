@@ -6,6 +6,11 @@ import 'package:http/http.dart'as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 class DashBoardProvider with  ChangeNotifier{
+  String? errorMessage;
+  int? totalProducts;
+  int? totalCustomers;
+  int? totalStaffs;
+  int? totalTransactions;
   bool isLoading=false;
   double successRate=0;
   double pendingCalls=0;
@@ -172,6 +177,124 @@ class DashBoardProvider with  ChangeNotifier{
       isLoading = false;
       notifyListeners();
     }
+  }
+  
+  
+  Future<void>CountProduct()async{
+    isLoading=true;
+    notifyListeners();
+    try{
+      final response= await http.get(Uri.parse('https://call-logs-backend.vercel.app/api/products/count'));
+      if(response.statusCode==200){
+        final data=jsonDecode(response.body);
+        totalProducts = data['totalProducts'] ?? 0; // ✅ match your API key
+      } else {
+        errorMessage =
+        'Error ${response.statusCode}: ${response.reasonPhrase ?? "Unknown error"}';
+      }
+
+      
+    }catch(e){
+      
+    }
+    finally {
+      isLoading = false;
+      notifyListeners();
+    }
+    
+  }
+  Future<void>CountCustomer()async{
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null) {
+      print("❌ No token found for calendar meetings");
+      return;
+    }
+    isLoading=true;
+    notifyListeners();
+    try{
+      final response= await http.get(Uri.parse('https://call-logs-backend.vercel.app/api/customers/count'),
+        headers: {
+          'Authorization': "Bearer $token",
+          'Accept': "application/json",
+        },
+
+      );
+      if(response.statusCode==200){
+        final data=jsonDecode(response.body);
+        totalCustomers = data['totalCustomers'] ?? 0; // ✅ match your API key
+      } else {
+        errorMessage =
+        'Error ${response.statusCode}: ${response.reasonPhrase ?? "Unknown error"}';
+      }
+
+
+    }catch(e){
+
+    }
+    finally {
+      isLoading = false;
+      notifyListeners();
+    }
+
+  }
+  Future<void>CountStaff()async{
+    isLoading=true;
+    notifyListeners();
+    try{
+      final response= await http.get(Uri.parse('https://call-logs-backend.vercel.app/api/group-users/count'));
+      if(response.statusCode==200){
+        final data=jsonDecode(response.body);
+        totalStaffs = data['totalUsers'] ?? 0; // ✅ match your API key
+      } else {
+        errorMessage =
+        'Error ${response.statusCode}: ${response.reasonPhrase ?? "Unknown error"}';
+      }
+
+
+    }catch(e){
+
+    }
+    finally {
+      isLoading = false;
+      notifyListeners();
+    }
+
+  }
+  Future<void>CountTransaction()async{
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null) {
+      print("❌ No token found for calendar meetings");
+      return;
+    }
+    isLoading=true;
+    notifyListeners();
+    try{
+      final response= await http.get(Uri.parse('https://call-logs-backend.vercel.app/api/orders/total'),
+        headers: {
+          'Authorization': "Bearer $token",
+          'Accept': "application/json",
+        },);
+      if(response.statusCode==200){
+        final data=jsonDecode(response.body);
+        totalTransactions = data['totalSales'] ?? 0; // ✅ match your API key
+      } else {
+        errorMessage =
+        'Error ${response.statusCode}: ${response.reasonPhrase ?? "Unknown error"}';
+      }
+
+
+    }catch(e){
+
+    }
+    finally {
+      isLoading = false;
+      notifyListeners();
+    }
+
   }
 
 

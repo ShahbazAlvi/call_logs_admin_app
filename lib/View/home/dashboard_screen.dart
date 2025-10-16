@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:infinity/View/Meeting_calender/AllMeeting.dart';
 import 'package:infinity/View/home/weekly_charts.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -8,6 +9,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 import '../../Provider/dashboard_provider.dart';
 import '../Meeting_calender/MeetingCalender.dart';
+import '../followUpScreen/FollowUpScreen.dart';
 import '../monthly chats.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -29,6 +31,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
       await dashboardProvider.fetchCalendarMeetings();
       await dashboardProvider..fetchMonthlyTrends();
       await dashboardProvider.fetchWeeklyTrends();
+      await dashboardProvider.CountProduct();
+      await dashboardProvider.CountCustomer();
+      await dashboardProvider.CountStaff();
+      await dashboardProvider.CountTransaction();
     });
   }
 
@@ -36,8 +42,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     final provider = Provider.of<DashBoardProvider>(context);
     return Scaffold(
       backgroundColor: Colors.white,
+
       appBar: AppBar(
-        title: const Text("Dashboard"),
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Center(child: const Text("Dashboard",style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
         backgroundColor: Colors.indigo,
       ),
 
@@ -60,7 +68,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   SizedBox(height: 10),
                   Text(
-                    'Welcome User',
+                    'Welcome Admin',
                     style: TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ],
@@ -72,6 +80,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
               title: const Text('Dashboard'),
               onTap: () {
                 Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.dashboard, color: Colors.indigo),
+              title: const Text('All Meeting detail'),
+              onTap: () {
+                Navigator.push(context,MaterialPageRoute(builder: (context)=>AllMeetingScreen()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.dashboard, color: Colors.indigo),
+              title: const Text('Follow Up'),
+              onTap: () {
+                Navigator.push(context,MaterialPageRoute(builder: (context)=>FollowUpScreen()));
               },
             ),
 
@@ -141,10 +163,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       spacing: 16,
                       runSpacing: 16,
                       children: [
-                        AnimatedDashboardCard(icon: Icons.person, title:'Customer', count:'23', bcolor:Colors.green),
-                        AnimatedDashboardCard(icon: Icons.shop, title:'Products', count:'23', bcolor:Colors.red),
-                        AnimatedDashboardCard(icon: Icons.people_rounded, title:'Staff', count:'23', bcolor:Colors.blue),
-                        AnimatedDashboardCard(icon: Icons.person, title:'Transactions', count:'23', bcolor:Colors.orange)
+                        AnimatedDashboardCard(icon: Icons.person, title:'Customer', count:provider.totalCustomers.toString(), bcolor:Colors.green),
+                        AnimatedDashboardCard(icon: Icons.shop, title:'Products', count:provider.totalProducts.toString(), bcolor:Colors.red),
+                        AnimatedDashboardCard(icon: Icons.people_rounded, title:'Staff', count:provider.totalStaffs.toString(), bcolor:Colors.blue),
+                        AnimatedDashboardCard(icon: Icons.person, title:'Transactions', count:provider.totalTransactions.toString(), bcolor:Colors.orange)
 
                       ],
                     ),
@@ -152,39 +174,122 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 SizedBox(height: 20,),
                 Text("Performance Summary",style: TextStyle(fontWeight: FontWeight.bold),),
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF5F8FF),
-                      borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: SizedBox(
-                    height: 250,
-                    child: PieChart(
-                      PieChartData(
-                        sectionsSpace: 3,
-                        centerSpaceRadius: 60,
-                        sections: provider.chartData
-                            .map(
-                              (item) => PieChartSectionData(
-                            color: item["color"],
-                            value: item["value"],
-                            title: "${item["value"].toInt()}", // show 576, 577
-                            radius: 40,
-                            titleStyle: const TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                // Container(
+                //   decoration: BoxDecoration(
+                //     color: const Color(0xFFF5F8FF),
+                //       borderRadius: BorderRadius.circular(12),
+                //   ),
+                //   child: SizedBox(
+                //     height: 250,
+                //     child: PieChart(
+                //       PieChartData(
+                //         sectionsSpace: 3,
+                //         centerSpaceRadius: 60,
+                //         sections: provider.chartData
+                //             .map(
+                //               (item) => PieChartSectionData(
+                //             color: item["color"],
+                //             value: item["value"],
+                //             title: "${item["value"].toInt()}", // show 576, 577
+                //             radius: 40,
+                //             titleStyle: const TextStyle(
+                //               fontSize: 14,
+                //               fontWeight: FontWeight.bold,
+                //               color: Colors.white,
+                //             ),
+                //           ),
+                //         )
+                //             .toList(),
+                //       ),
+                //     ),
+                //   ),
+                // ),
+                //
+                // const SizedBox(height: 30),
+                // _buildLegend(provider.chartData),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF5F8FF),
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              blurRadius: 6,
+                              offset: const Offset(0, 3),
                             ),
-                          ),
-                        )
+                          ],
+                        ),
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
+                          children: [
+                            const Text(
+                              "Performance Overview",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+                            ),
+                            const SizedBox(height: 20),
+                            SizedBox(
+                              height: 250,
+                              child: PieChart(
+                                PieChartData(
+                                  sectionsSpace: 2,
+                                  centerSpaceRadius: 50,
+                                  borderData: FlBorderData(show: false),
+                                  sections: provider.chartData
+                                      .map(
+                                        (item) => PieChartSectionData(
+                                      color: item["color"],
+                                      value: item["value"],
+                                      title: "${item["value"].toStringAsFixed(1)}%",
+                                      radius: 60,
+                                      titleStyle: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  )
+                                      .toList(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      // Legends
+                      Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 16,
+                        runSpacing: 8,
+                        children: provider.chartData
+                            .map((item) => Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              width: 16,
+                              height: 16,
+                              decoration: BoxDecoration(
+                                color: item["color"],
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              "${item["title"]} (${item["value"].toStringAsFixed(1)}%)",
+                              style: const TextStyle(fontSize: 14, color: Colors.black87),
+                            ),
+                          ],
+                        ))
                             .toList(),
                       ),
-                    ),
+                    ],
                   ),
                 ),
-
-                const SizedBox(height: 30),
-                _buildLegend(provider.chartData),
                 SizedBox(height: 20),
                 Text("Follow-up Meeting",style: TextStyle(fontWeight: FontWeight.bold),),
                 Padding(

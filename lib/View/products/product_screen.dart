@@ -32,9 +32,10 @@ class _ProductScreenState extends State<ProductScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Products"),
+        title: const Text("Products",style: TextStyle(color:Colors.white ),),
         centerTitle: true,
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.indigo,
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [IconButton(onPressed: (){
           Navigator.push(context, MaterialPageRoute(builder: (context)=>AddProductScreen()));
         }, icon:Icon(Icons.add))],

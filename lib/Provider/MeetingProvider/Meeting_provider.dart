@@ -23,7 +23,7 @@ class MeetingProvider with ChangeNotifier {
         return;
       }
 
-      final url = Uri.parse('https://yourapi.com/api/upcoming-meetings'); // 🔹 Change to your API URL
+      final url = Uri.parse('https://call-logs-backend.vercel.app/api/meetings/calendar'); // 🔹 Change to your API URL
       final response = await http.get(url, headers: {
         'Authorization': 'Bearer $token',
       });

@@ -1,15 +1,16 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-
+import 'package:intl/intl.dart';
 import '../../Provider/MeetingProvider/Meeting_provider.dart';
-
 
 class UpcomingMeetingsScreen extends StatefulWidget {
   const UpcomingMeetingsScreen({super.key});
 
   @override
-  State<UpcomingMeetingsScreen> createState() => _UpcomingMeetingsScreenState();
+  State<UpcomingMeetingsScreen> createState() =>
+      _UpcomingMeetingsScreenState();
 }
 
 class _UpcomingMeetingsScreenState extends State<UpcomingMeetingsScreen> {
@@ -31,30 +32,38 @@ class _UpcomingMeetingsScreenState extends State<UpcomingMeetingsScreen> {
         ? provider.getMeetingsForDate(_selectedDay!)
         : [];
 
+    final currentMonth = DateFormat.MMMM().format(_focusedDay);
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Upcoming Meetings"),
         backgroundColor: Colors.indigo,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text(
+          "$currentMonth - All Meetings",
+          style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+        ),
       ),
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
         children: [
-          // 🔹 Calendar View
+          // 🔹 Calendar
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: TableCalendar(
               firstDay: DateTime.utc(2024, 1, 1),
               lastDay: DateTime.utc(2026, 12, 31),
               focusedDay: _focusedDay,
-              selectedDayPredicate: (day) =>
-                  isSameDay(_selectedDay, day),
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
               calendarFormat: CalendarFormat.month,
               onDaySelected: (selectedDay, focusedDay) {
                 setState(() {
                   _selectedDay = selectedDay;
                   _focusedDay = focusedDay;
                 });
+              },
+              onPageChanged: (focusedDay) {
+                setState(() => _focusedDay = focusedDay);
               },
               calendarStyle: CalendarStyle(
                 todayDecoration: BoxDecoration(
@@ -65,26 +74,39 @@ class _UpcomingMeetingsScreenState extends State<UpcomingMeetingsScreen> {
                   color: Colors.indigo,
                   shape: BoxShape.circle,
                 ),
+                outsideDaysVisible: false,
               ),
+              // ✅ Highlight days with meetings
               calendarBuilders: CalendarBuilders(
                 defaultBuilder: (context, day, _) {
-                  bool isMeeting = provider.isMeetingDay(day);
-                  return Container(
-                    margin: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      color: isMeeting
-                          ? Colors.greenAccent.withOpacity(0.8)
-                          : null,
-                      shape: BoxShape.circle,
-                    ),
-                    alignment: Alignment.center,
+                  final meetings = provider.getMeetingsForDate(day);
+                  final hasMeeting = meetings.isNotEmpty;
+
+                  if (hasMeeting) {
+                    // 🟢 Highlight meeting days
+                    return Container(
+                      margin: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        color: Colors.greenAccent.withOpacity(0.4),
+                        shape: BoxShape.circle,
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${day.day}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            color: Colors.indigo,
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+
+                  // Normal day
+                  return Center(
                     child: Text(
                       '${day.day}',
-                      style: TextStyle(
-                        color: isMeeting ? Colors.white : Colors.black,
-                        fontWeight:
-                        isMeeting ? FontWeight.bold : FontWeight.normal,
-                      ),
+                      style: const TextStyle(color: Colors.black),
                     ),
                   );
                 },
@@ -94,7 +116,7 @@ class _UpcomingMeetingsScreenState extends State<UpcomingMeetingsScreen> {
 
           const SizedBox(height: 10),
 
-          // 🔹 Meeting List Below Calendar
+          // 🔹 Meeting list
           Expanded(
             child: meetingsForSelectedDate.isEmpty
                 ? const Center(
@@ -107,26 +129,34 @@ class _UpcomingMeetingsScreenState extends State<UpcomingMeetingsScreen> {
               itemCount: meetingsForSelectedDate.length,
               itemBuilder: (context, index) {
                 final meeting = meetingsForSelectedDate[index];
-                final company = meeting['companyName'] ?? "Unknown";
+                final company =
+                    meeting['companyName'] ?? "Unknown";
+                final person = meeting['person'] ?? "";
                 final times = (meeting['times'] as List)
                     .map((t) => t.toString())
                     .join(", ");
+                final timeline = meeting['timeline'] ?? '';
 
                 return Card(
                   margin: const EdgeInsets.symmetric(
                       horizontal: 12, vertical: 6),
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   child: ListTile(
                     leading: const Icon(Icons.business,
                         color: Colors.indigo),
                     title: Text(company),
-                    subtitle: Text("Time: $times"),
+                    subtitle:
+                    Text("Person: $person\nTime: $times"),
                     trailing: Text(
-                      meeting['timeline'] ?? '',
-                      style: const TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.bold),
+                      timeline,
+                      style: TextStyle(
+                        color: timeline == 'Hold'
+                            ? Colors.orange
+                            : Colors.green,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 );
@@ -138,3 +168,4 @@ class _UpcomingMeetingsScreenState extends State<UpcomingMeetingsScreen> {
     );
   }
 }
+

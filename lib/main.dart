@@ -4,6 +4,8 @@ import 'package:infinity/View/Auths/Login_screen.dart';
 import 'package:infinity/View/home/dashboard_screen.dart';
 import 'package:provider/provider.dart';
 
+import 'Provider/FollowUp/FollowupProvider.dart';
+import 'Provider/MeetingProvider/AllMeetingProvider.dart';
 import 'Provider/MeetingProvider/Meeting_provider.dart';
 import 'Provider/customer/customer_provider.dart';
 import 'Provider/dashboard_provider.dart';
@@ -19,6 +21,8 @@ void main() {
       ChangeNotifierProvider(create: (_) => StaffProvider()),
       ChangeNotifierProvider(create: (_) => CompanyProvider()),
       ChangeNotifierProvider(create: (_) => MeetingProvider()),
+      ChangeNotifierProvider(create: (_) => AllMeetingProvider()),
+      ChangeNotifierProvider(create: (_) => FollowUpProvider()),
     ],
     child: MyApp(),)
   );

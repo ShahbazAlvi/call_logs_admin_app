@@ -31,7 +31,10 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
     final provider = Provider.of<CompanyProvider>(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Add Customer')),
+      appBar: AppBar(
+        backgroundColor: Colors.indigo,
+          iconTheme: const IconThemeData(color: Colors.white),
+          title: const Text('Add Customer',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

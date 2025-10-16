@@ -96,7 +96,9 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Company List'),
+        backgroundColor: Colors.indigo,
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text('Customers List',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
