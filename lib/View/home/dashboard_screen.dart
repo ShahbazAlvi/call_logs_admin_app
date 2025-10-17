@@ -8,9 +8,12 @@ import 'package:table_calendar/table_calendar.dart';
 
 
 import '../../Provider/dashboard_provider.dart';
+import '../Customer/customer_list.dart';
 import '../Meeting_calender/MeetingCalender.dart';
 import '../followUpScreen/FollowUpScreen.dart';
 import '../monthly chats.dart';
+import '../products/product_screen.dart';
+import '../staff/staffListScreen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -86,7 +89,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               leading: const Icon(Icons.dashboard, color: Colors.indigo),
               title: const Text('All Meeting detail'),
               onTap: () {
-                Navigator.push(context,MaterialPageRoute(builder: (context)=>AllMeetingScreen()));
+                Navigator.push(context,MaterialPageRoute(builder: (context)=>NoDateMeetingScreen()));
               },
             ),
             ListTile(
@@ -163,9 +166,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       spacing: 16,
                       runSpacing: 16,
                       children: [
-                        AnimatedDashboardCard(icon: Icons.person, title:'Customer', count:provider.totalCustomers.toString(), bcolor:Colors.green),
-                        AnimatedDashboardCard(icon: Icons.shop, title:'Products', count:provider.totalProducts.toString(), bcolor:Colors.red),
-                        AnimatedDashboardCard(icon: Icons.people_rounded, title:'Staff', count:provider.totalStaffs.toString(), bcolor:Colors.blue),
+                        GestureDetector(
+                          onTap: (){Navigator.push(context,MaterialPageRoute(builder: (context)=>CompanyListScreen()));},
+                            child: AnimatedDashboardCard(icon: Icons.person, title:'Customer', count:provider.totalCustomers.toString(), bcolor:Colors.green)),
+                        GestureDetector(
+                            onTap: (){Navigator.push(context,MaterialPageRoute(builder: (context)=>ProductScreen()));},
+                            child: AnimatedDashboardCard(icon: Icons.shop, title:'Products', count:provider.totalProducts.toString(), bcolor:Colors.red)),
+                        GestureDetector(
+                            onTap: (){Navigator.push(context,MaterialPageRoute(builder: (context)=>StaffScreen()));},
+                            child: AnimatedDashboardCard(icon: Icons.people_rounded, title:'Staff', count:provider.totalStaffs.toString(), bcolor:Colors.blue)),
                         AnimatedDashboardCard(icon: Icons.person, title:'Transactions', count:provider.totalTransactions.toString(), bcolor:Colors.orange)
 
                       ],
@@ -207,37 +216,123 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 //
                 // const SizedBox(height: 30),
                 // _buildLegend(provider.chartData),
+                // Padding(
+                //   padding: const EdgeInsets.all(16),
+                //   child: Column(
+                //     children: [
+                //       Container(
+                //         decoration: BoxDecoration(
+                //           color: const Color(0xFFF5F8FF),
+                //           borderRadius: BorderRadius.circular(16),
+                //           boxShadow: [
+                //             BoxShadow(
+                //               color: Colors.black12,
+                //               blurRadius: 6,
+                //               offset: const Offset(0, 3),
+                //             ),
+                //           ],
+                //         ),
+                //         padding: const EdgeInsets.all(16),
+                //         child: Column(
+                //           children: [
+                //             const Text(
+                //               "Performance Overview",
+                //               style: TextStyle(
+                //                   fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+                //             ),
+                //             const SizedBox(height: 20),
+                //             SizedBox(
+                //               height: 250,
+                //               child: PieChart(
+                //                 PieChartData(
+                //                   sectionsSpace: 2,
+                //                   centerSpaceRadius: 50,
+                //                   borderData: FlBorderData(show: false),
+                //                   sections: provider.chartData
+                //                       .map(
+                //                         (item) => PieChartSectionData(
+                //                       color: item["color"],
+                //                       value: item["value"],
+                //                       title: "${item["value"].toStringAsFixed(1)}%",
+                //                       radius: 60,
+                //                       titleStyle: const TextStyle(
+                //                         fontSize: 14,
+                //                         fontWeight: FontWeight.bold,
+                //                         color: Colors.white,
+                //                       ),
+                //                     ),
+                //                   )
+                //                       .toList(),
+                //                 ),
+                //               ),
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //       const SizedBox(height: 24),
+                //       // Legends
+                //       Wrap(
+                //         alignment: WrapAlignment.center,
+                //         spacing: 16,
+                //         runSpacing: 8,
+                //         children: provider.chartData
+                //             .map((item) => Row(
+                //           mainAxisSize: MainAxisSize.min,
+                //           children: [
+                //             Container(
+                //               width: 16,
+                //               height: 16,
+                //               decoration: BoxDecoration(
+                //                 color: item["color"],
+                //                 borderRadius: BorderRadius.circular(4),
+                //               ),
+                //             ),
+                //             const SizedBox(width: 6),
+                //             Text(
+                //               "${item["title"]} (${item["value"].toStringAsFixed(1)}%)",
+                //               style: const TextStyle(fontSize: 14, color: Colors.black87),
+                //             ),
+                //           ],
+                //         ))
+                //             .toList(),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      // Main Card
                       Container(
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF5F8FF),
-                          borderRadius: BorderRadius.circular(16),
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFFEEF2FF), Color(0xFFFFFFFF)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black12,
-                              blurRadius: 6,
-                              offset: const Offset(0, 3),
+                              color: Colors.indigo.withOpacity(0.15),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
                             ),
                           ],
                         ),
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
                         child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            const Text(
-                              "Performance Overview",
-                              style: TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
-                            ),
-                            const SizedBox(height: 20),
+
+                            // Pie Chart
                             SizedBox(
-                              height: 250,
+                              height: 240,
                               child: PieChart(
                                 PieChartData(
-                                  sectionsSpace: 2,
-                                  centerSpaceRadius: 50,
+                                  sectionsSpace: 3,
+                                  centerSpaceRadius: 55,
                                   borderData: FlBorderData(show: false),
                                   sections: provider.chartData
                                       .map(
@@ -245,11 +340,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       color: item["color"],
                                       value: item["value"],
                                       title: "${item["value"].toStringAsFixed(1)}%",
-                                      radius: 60,
+                                      radius: 65,
                                       titleStyle: const TextStyle(
-                                        fontSize: 14,
+                                        fontSize: 13,
                                         fontWeight: FontWeight.bold,
                                         color: Colors.white,
+                                        shadows: [
+                                          Shadow(
+                                            color: Colors.black26,
+                                            blurRadius: 2,
+                                          ),
+                                        ],
                                       ),
                                     ),
                                   )
@@ -257,39 +358,61 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 ),
                               ),
                             ),
+                            const SizedBox(height: 24),
+
+                            // Divider
+                            Container(
+                              height: 1,
+                              width: double.infinity,
+                              color: Colors.indigo.withOpacity(0.2),
+                              margin: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+
+                            // Legends Section
+                            Wrap(
+                              alignment: WrapAlignment.center,
+                              spacing: 18,
+                              runSpacing: 10,
+                              children: provider.chartData
+                                  .map((item) => Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: item["color"].withOpacity(0.15),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      width: 14,
+                                      height: 14,
+                                      decoration: BoxDecoration(
+                                        color: item["color"],
+                                        shape: BoxShape.circle,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "${item["title"]} (${item["value"].toStringAsFixed(1)}%)",
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Colors.black87,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ))
+                                  .toList(),
+                            ),
                           ],
                         ),
-                      ),
-                      const SizedBox(height: 24),
-                      // Legends
-                      Wrap(
-                        alignment: WrapAlignment.center,
-                        spacing: 16,
-                        runSpacing: 8,
-                        children: provider.chartData
-                            .map((item) => Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 16,
-                              height: 16,
-                              decoration: BoxDecoration(
-                                color: item["color"],
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Text(
-                              "${item["title"]} (${item["value"].toStringAsFixed(1)}%)",
-                              style: const TextStyle(fontSize: 14, color: Colors.black87),
-                            ),
-                          ],
-                        ))
-                            .toList(),
                       ),
                     ],
                   ),
                 ),
+
                 SizedBox(height: 20),
                 Text("Follow-up Meeting",style: TextStyle(fontWeight: FontWeight.bold),),
                 Padding(

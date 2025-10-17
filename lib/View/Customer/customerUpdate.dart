@@ -1,45 +1,57 @@
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../Provider/customer/customer_provider.dart';
 import '../../Provider/product/product_provider.dart';
 import '../../Provider/staff/StaffProvider.dart';
 
-class AddCustomerScreen extends StatefulWidget {
-  const AddCustomerScreen({super.key});
+class UpdateCustomerScreen extends StatefulWidget {
+  final String? customerId; // 👈 null = Add mode, not null = Edit mode
+  const UpdateCustomerScreen({super.key, this.customerId});
 
   @override
-  State<AddCustomerScreen> createState() => _AddCustomerScreenState();
+  State<UpdateCustomerScreen> createState() => _AddCustomerScreenState();
 }
 
-class _AddCustomerScreenState extends State<AddCustomerScreen> {
-  @override
+class _AddCustomerScreenState extends State<UpdateCustomerScreen> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() {
-      Provider.of<StaffProvider>(context, listen: false).fetchStaff();
-      Provider.of<ProductProvider>(context, listen: false).fetchProducts();
+    Future.microtask(() async {
+      final staff = Provider.of<StaffProvider>(context, listen: false);
+      final product = Provider.of<ProductProvider>(context, listen: false);
+      final companyProvider = Provider.of<CompanyProvider>(context, listen: false);
+
+      await staff.fetchStaff();
+      await product.fetchProducts();
+
+      // 👇 If editing existing customer, load its data
+      if (widget.customerId != null) {
+        await companyProvider.fetchCustomerById(widget.customerId!);
+      }
     });
   }
 
+  @override
   Widget build(BuildContext context) {
-
-
-    final staffProvider = Provider.of<StaffProvider>(context, listen: false);
-
     final provider = Provider.of<CompanyProvider>(context);
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.indigo,
-          iconTheme: const IconThemeData(color: Colors.white),
-          title: Center(child: const Text('Add Customer',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),))),
-      body: SingleChildScrollView(
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: Text(
+          widget.customerId == null ? 'Add Customer' : 'Update Customer',
+          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        centerTitle: true,
+      ),
+      body: provider.isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // Company Logo
+            // 🖼 Company Logo
             GestureDetector(
               onTap: provider.pickImage,
               child: provider.companyLogo != null
@@ -65,13 +77,11 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
             _buildTextField(provider.phoneController, 'Phone Number'),
 
             const Divider(height: 40),
-            const Text(
-              'Person Details',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-            ),
+            const Text('Person Details',
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             const SizedBox(height: 10),
 
-            // Dynamic Person Fields
+            // 👨‍💼 Dynamic person fields
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
@@ -92,13 +102,11 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text('Person ${index + 1}',
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold)),
+                                style: const TextStyle(fontWeight: FontWeight.bold)),
                             if (provider.personsList.length > 1)
                               IconButton(
                                 icon: const Icon(Icons.delete, color: Colors.red),
-                                onPressed: () =>
-                                    provider.removePerson(index),
+                                onPressed: () => provider.removePerson(index),
                               ),
                           ],
                         ),
@@ -114,7 +122,6 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
               },
             ),
 
-            // Add another person button
             OutlinedButton.icon(
               onPressed: provider.addPerson,
               icon: const Icon(Icons.add),
@@ -122,96 +129,84 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
             ),
 
             const Divider(height: 40),
-            //_buildTextField(provider.assignedStaffController, 'Assigned Staff ID'),
+
+            // Assigned Staff Dropdown
             Consumer<StaffProvider>(
               builder: (context, staffProvider, _) {
-                final staffList = staffProvider.staffs;
-
                 if (staffProvider.isLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
-
-                if (staffList.isEmpty) {
-                  return const Text('No staff available');
-                }
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
-                      labelText: 'Assigned Staff',
-                      border: OutlineInputBorder(),
-                    ),
-                    value: provider.selectedStaffId,
-                    items: staffList.map((staff) {
-                      return DropdownMenuItem<String>(
-                        value: staff.sId, // ID for backend
-                        child: Text(staff.username ?? 'Unnamed Staff'), // show name
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      provider.selectedStaffId = value;
-                      provider.notifyListeners();
-                    },
+                final staffList = staffProvider.staffs;
+                return DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    labelText: 'Assigned Staff',
+                    border: OutlineInputBorder(),
                   ),
+                  value: provider.selectedStaffId,
+                  items: staffList.map((staff) {
+                    return DropdownMenuItem<String>(
+                      value: staff.sId,
+                      child: Text(staff.username ?? 'Unnamed Staff'),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    provider.selectedStaffId = value;
+                    provider.notifyListeners();
+                  },
                 );
               },
             ),
 
-            //_buildTextField(provider.assignedProductsController, 'Assigned Product ID'),
+            const SizedBox(height: 10),
+
+            // Assigned Product Dropdown
             Consumer<ProductProvider>(
               builder: (context, productProvider, _) {
-                final productList = productProvider.products;
-
                 if (productProvider.isLoading) {
                   return const Center(child: CircularProgressIndicator());
                 }
-
-                if (productList.isEmpty) {
-                  return const Text('No products available');
-                }
-
-                return Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 6),
-                  child: DropdownButtonFormField<String>(
-                    decoration: const InputDecoration(
-                      labelText: 'Assigned Product',
-                      border: OutlineInputBorder(),
-                    ),
-                    value: provider.selectedProductId,
-                    items: productList.map((product) {
-                      return DropdownMenuItem<String>(
-                        value: product.sId, // ✅ pass product ID
-                        child: Text(product.name ?? 'Unnamed Product'), // ✅ show product name
-                      );
-                    }).toList(),
-                    onChanged: (value) {
-                      provider.selectedProductId = value;
-                      provider.notifyListeners();
-                    },
+                final productList = productProvider.products;
+                return DropdownButtonFormField<String>(
+                  decoration: const InputDecoration(
+                    labelText: 'Assigned Product',
+                    border: OutlineInputBorder(),
                   ),
+                  value: provider.selectedProductId,
+                  items: productList.map((product) {
+                    return DropdownMenuItem<String>(
+                      value: product.sId,
+                      child: Text(product.name ?? 'Unnamed Product'),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    provider.selectedProductId = value;
+                    provider.notifyListeners();
+                  },
                 );
               },
             ),
 
-
             const SizedBox(height: 20),
 
-            provider.isLoading
-                ? const CircularProgressIndicator()
-                : ElevatedButton.icon(
+            ElevatedButton.icon(
               onPressed: () async {
-                await provider.createCustomer();
+                if (widget.customerId == null) {
+                  await provider.createCustomer();
+                } else {
+                  await provider.UpdateCustomer(widget.customerId!);
+                }
+
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                     content: Text(provider.message),
                     backgroundColor: Colors.blue,
                   ));
                 }
-                provider.clearForm();
               },
               icon: const Icon(Icons.save),
-              label: const Text('Create Customer'),
+              label: Text(widget.customerId == null
+                  ? 'Create Customer'
+                  : 'Update Customer'),
             ),
           ],
         ),

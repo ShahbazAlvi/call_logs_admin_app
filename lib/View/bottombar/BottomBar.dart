@@ -38,7 +38,7 @@ class _BottombarScreenState extends State<BottombarScreen> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         backgroundColor: Colors.white,
-        selectedItemColor: Colors.blue,
+        selectedItemColor: Colors.indigo,
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed, // prevents shifting
 

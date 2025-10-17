@@ -1,265 +1,332 @@
-import 'dart:convert';
-
-/// Top-level function to parse the API response
-ApiResponse apiResponseFromJson(String str) =>
-    ApiResponse.fromJson(json.decode(str));
-
-/// ✅ Root model
-class ApiResponse {
+// class NoDateMeetingModel {
+//   final bool success;
+//   final int count;
+//   final List<MeetingData> data;
+//
+//   NoDateMeetingModel({
+//     required this.success,
+//     required this.count,
+//     required this.data,
+//   });
+//
+//   factory NoDateMeetingModel.fromJson(Map<String, dynamic> json) {
+//     return NoDateMeetingModel(
+//       success: json['success'] ?? false,
+//       count: json['count'] ?? 0,
+//       data: (json['data'] as List<dynamic>?)
+//           ?.map((item) => MeetingData.fromJson(item))
+//           .toList() ??
+//           [],
+//     );
+//   }
+// }
+//
+// class MeetingData {
+//   final String? id;
+//   final String? companyName;
+//   final Person? person;
+//   final Product? product;
+//   final String? status;
+//   final List<String> followDates;
+//   final List<String> followTimes;
+//   final List<dynamic> details;
+//   final String? timeline;
+//   final String? createdAt;
+//   final String? updatedAt;
+//
+//   MeetingData({
+//     this.id,
+//     this.companyName,
+//     this.person,
+//     this.product,
+//     this.status,
+//     this.followDates = const [],
+//     this.followTimes = const [],
+//     this.details = const [],
+//     this.timeline,
+//     this.createdAt,
+//     this.updatedAt,
+//   });
+//
+//   factory MeetingData.fromJson(Map<String, dynamic> json) {
+//     return MeetingData(
+//       id: json['_id'],
+//       companyName: json['companyName'],
+//       person:
+//       json['person'] != null ? Person.fromJson(json['person']) : null,
+//       product:
+//       json['product'] != null ? Product.fromJson(json['product']) : null,
+//       status: json['status'],
+//       followDates: List<String>.from(json['followDates'] ?? []),
+//       followTimes: List<String>.from(json['followTimes'] ?? []),
+//       details: List<dynamic>.from(json['details'] ?? []),
+//       timeline: json['Timeline'],
+//       createdAt: json['createdAt'],
+//       updatedAt: json['updatedAt'],
+//     );
+//   }
+// }
+//
+// class Person {
+//   final String? id;
+//   final String? companyName;
+//   final List<PersonInfo> persons;
+//   final AssignedProduct? assignedProducts;
+//   final AssignedStaff? assignedStaff;
+//
+//   Person({
+//     this.id,
+//     this.companyName,
+//     this.persons = const [],
+//     this.assignedProducts,
+//     this.assignedStaff,
+//   });
+//
+//   factory Person.fromJson(Map<String, dynamic> json) {
+//     return Person(
+//       id: json['_id'],
+//       companyName: json['companyName'],
+//       persons: (json['persons'] as List<dynamic>?)
+//           ?.map((e) => PersonInfo.fromJson(e))
+//           .toList() ??
+//           [],
+//       assignedProducts: json['assignedProducts'] != null
+//           ? AssignedProduct.fromJson(json['assignedProducts'])
+//           : null,
+//       assignedStaff: json['assignedStaff'] != null
+//           ? AssignedStaff.fromJson(json['assignedStaff'])
+//           : null,
+//     );
+//   }
+// }
+//
+// class PersonInfo {
+//   final String? fullName;
+//   final String? phoneNumber;
+//
+//   PersonInfo({this.fullName, this.phoneNumber});
+//
+//   factory PersonInfo.fromJson(Map<String, dynamic> json) {
+//     return PersonInfo(
+//       fullName: json['fullName'],
+//       phoneNumber: json['phoneNumber'],
+//     );
+//   }
+// }
+//
+// class Product {
+//   final String? id;
+//   final String? name;
+//   final int? price;
+//
+//   Product({this.id, this.name, this.price});
+//
+//   factory Product.fromJson(Map<String, dynamic> json) {
+//     return Product(
+//       id: json['_id'],
+//       name: json['name'],
+//       price: json['price'] is int ? json['price'] : int.tryParse("${json['price']}"),
+//     );
+//   }
+// }
+//
+// class AssignedProduct {
+//   final String? id;
+//   final String? name;
+//   final int? price;
+//
+//   AssignedProduct({this.id, this.name, this.price});
+//
+//   factory AssignedProduct.fromJson(Map<String, dynamic> json) {
+//     return AssignedProduct(
+//       id: json['_id'],
+//       name: json['name'],
+//       price: json['price'] is int ? json['price'] : int.tryParse("${json['price']}"),
+//     );
+//   }
+// }
+//
+// class AssignedStaff {
+//   final String? id;
+//   final String? username;
+//   final String? email;
+//
+//   AssignedStaff({this.id, this.username, this.email});
+//
+//   factory AssignedStaff.fromJson(Map<String, dynamic> json) {
+//     return AssignedStaff(
+//       id: json['_id'],
+//       username: json['username'],
+//       email: json['email'],
+//     );
+//   }
+// }
+class NoDateMeetingModel {
   final bool success;
   final int count;
-  final List<Lead> data;
+  final List<MeetingData> data;
 
-  ApiResponse({
+  NoDateMeetingModel({
     required this.success,
     required this.count,
     required this.data,
   });
 
-  factory ApiResponse.fromJson(Map<String, dynamic> json) {
-    return ApiResponse(
+  factory NoDateMeetingModel.fromJson(Map<String, dynamic> json) {
+    return NoDateMeetingModel(
       success: json['success'] ?? false,
       count: json['count'] ?? 0,
-      data: (json['data'] as List?)
-          ?.map((x) => Lead.fromJson(x as Map<String, dynamic>))
-          .toList() ??
-          [],
+      data: (json['data'] as List<dynamic>? ?? [])
+          .map((item) => MeetingData.fromJson(item))
+          .toList(),
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    "success": success,
-    "count": count,
-    "data": data.map((x) => x.toJson()).toList(),
-  };
 }
 
-/// ✅ Lead / Meeting model
-class Lead {
-  final String id;
-  final String companyName;
+class MeetingData {
+  final String? id;
+  final String? companyName;
   final Person? person;
   final Product? product;
-  final String status;
+  final String? status;
   final List<String> followDates;
   final List<String> followTimes;
-  final List<String> details;
-  final String timeline;
-  final DateTime? createdAt;
-  final DateTime? updatedAt;
-  final int v;
-  final String? action;
-  final String? contactMethod;
-  final String? designation;
-  final Staff? referToStaff;
-  final String? reference;
+  final List<dynamic> details;
+  final String? timeline;
+  final String? createdAt;
+  final String? updatedAt;
 
-  Lead({
-    required this.id,
-    required this.companyName,
-    required this.person,
-    required this.product,
-    required this.status,
-    required this.followDates,
-    required this.followTimes,
-    required this.details,
-    required this.timeline,
-    required this.createdAt,
-    required this.updatedAt,
-    required this.v,
-    this.action,
-    this.contactMethod,
-    this.designation,
-    this.referToStaff,
-    this.reference,
+  MeetingData({
+    this.id,
+    this.companyName,
+    this.person,
+    this.product,
+    this.status,
+    this.followDates = const [],
+    this.followTimes = const [],
+    this.details = const [],
+    this.timeline,
+    this.createdAt,
+    this.updatedAt,
   });
 
-  factory Lead.fromJson(Map<String, dynamic> json) {
-    return Lead(
-      id: json['_id'] ?? '',
-      companyName: json['companyName'] ?? '',
-      person: json['person'] != null
-          ? Person.fromJson(json['person'] as Map<String, dynamic>)
-          : null,
-      product: json['product'] != null
-          ? Product.fromJson(json['product'] as Map<String, dynamic>)
-          : null,
-      status: json['status'] ?? '',
-      followDates: (json['followDates'] as List?)
-          ?.map((e) => e.toString())
-          .toList() ??
-          [],
-      followTimes: (json['followTimes'] as List?)
-          ?.map((e) => e.toString())
-          .toList() ??
-          [],
-      details:
-      (json['details'] as List?)?.map((e) => e.toString()).toList() ?? [],
-      timeline: json['Timeline'] ?? '',
-      createdAt: json['createdAt'] != null
-          ? DateTime.tryParse(json['createdAt'])
-          : null,
-      updatedAt: json['updatedAt'] != null
-          ? DateTime.tryParse(json['updatedAt'])
-          : null,
-      v: json['__v'] ?? 0,
-      action: json['action'],
-      contactMethod: json['contactMethod'],
-      designation: json['designation'],
-      referToStaff: json['referToStaff'] != null
-          ? Staff.fromJson(json['referToStaff'] as Map<String, dynamic>)
-          : null,
-      reference: json['reference'],
+  factory MeetingData.fromJson(Map<String, dynamic> json) {
+    return MeetingData(
+      id: json['_id'],
+      companyName: json['companyName'],
+      person:
+      json['person'] != null ? Person.fromJson(json['person']) : null,
+      product:
+      json['product'] != null ? Product.fromJson(json['product']) : null,
+      status: json['status'],
+      followDates: List<String>.from(json['followDates'] ?? []),
+      followTimes: List<String>.from(json['followTimes'] ?? []),
+      details: List<dynamic>.from(json['details'] ?? []),
+      timeline: json['Timeline'],
+      createdAt: json['createdAt'],
+      updatedAt: json['updatedAt'],
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    "_id": id,
-    "companyName": companyName,
-    "person": person?.toJson(),
-    "product": product?.toJson(),
-    "status": status,
-    "followDates": followDates,
-    "followTimes": followTimes,
-    "details": details,
-    "Timeline": timeline,
-    "createdAt": createdAt?.toIso8601String(),
-    "updatedAt": updatedAt?.toIso8601String(),
-    "__v": v,
-    "action": action,
-    "contactMethod": contactMethod,
-    "designation": designation,
-    "referToStaff": referToStaff?.toJson(),
-    "reference": reference,
-  };
 }
 
-/// ✅ Person model
 class Person {
-  final String id;
-  final String companyName;
-  final List<ContactPerson> persons;
-  final Product? assignedProducts;
-  final Staff? assignedStaff;
+  final String? id;
+  final String? companyName;
+  final List<PersonInfo> persons;
+  final AssignedProduct? assignedProducts;
+  final AssignedStaff? assignedStaff;
 
   Person({
-    required this.id,
-    required this.companyName,
-    required this.persons,
+    this.id,
+    this.companyName,
+    this.persons = const [],
     this.assignedProducts,
     this.assignedStaff,
   });
 
   factory Person.fromJson(Map<String, dynamic> json) {
+    // Handle both String and Map types for assignedProducts
+    AssignedProduct? product;
+    if (json['assignedProducts'] is Map<String, dynamic>) {
+      product = AssignedProduct.fromJson(json['assignedProducts']);
+    }
+
     return Person(
-      id: json['_id'] ?? '',
-      companyName: json['companyName'] ?? '',
-      persons: (json['persons'] as List?)
-          ?.map((x) => ContactPerson.fromJson(x as Map<String, dynamic>))
-          .toList() ??
-          [],
-      assignedProducts: json['assignedProducts'] != null
-          ? Product.fromJson(json['assignedProducts'] as Map<String, dynamic>)
-          : null,
+      id: json['_id'],
+      companyName: json['companyName'],
+      persons: (json['persons'] as List<dynamic>? ?? [])
+          .map((e) => PersonInfo.fromJson(e))
+          .toList(),
+      assignedProducts: product,
       assignedStaff: json['assignedStaff'] != null
-          ? Staff.fromJson(json['assignedStaff'] as Map<String, dynamic>)
+          ? AssignedStaff.fromJson(json['assignedStaff'])
           : null,
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    "_id": id,
-    "companyName": companyName,
-    "persons": persons.map((x) => x.toJson()).toList(),
-    "assignedProducts": assignedProducts?.toJson(),
-    "assignedStaff": assignedStaff?.toJson(),
-  };
-
-  /// Fallback empty object to avoid null crashes
-  factory Person.empty() => Person(
-    id: '',
-    companyName: '',
-    persons: [],
-    assignedProducts: null,
-    assignedStaff: null,
-  );
 }
 
-/// ✅ Contact Person model
-class ContactPerson {
-  final String fullName;
-  final String phoneNumber;
+class PersonInfo {
+  final String? fullName;
+  final String? phoneNumber;
 
-  ContactPerson({
-    required this.fullName,
-    required this.phoneNumber,
-  });
+  PersonInfo({this.fullName, this.phoneNumber});
 
-  factory ContactPerson.fromJson(Map<String, dynamic> json) {
-    return ContactPerson(
-      fullName: json['fullName'] ?? '',
-      phoneNumber: json['phoneNumber'] ?? '',
+  factory PersonInfo.fromJson(Map<String, dynamic> json) {
+    return PersonInfo(
+      fullName: json['fullName'],
+      phoneNumber: json['phoneNumber'],
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    "fullName": fullName,
-    "phoneNumber": phoneNumber,
-  };
 }
 
-/// ✅ Product model
 class Product {
-  final String id;
-  final String name;
-  final int price;
+  final String? id;
+  final String? name;
+  final int? price;
 
-  Product({
-    required this.id,
-    required this.name,
-    required this.price,
-  });
+  Product({this.id, this.name, this.price});
 
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
-      id: json['_id'] ?? '',
-      name: json['name'] ?? '',
+      id: json['_id'],
+      name: json['name'],
       price: json['price'] is int
           ? json['price']
-          : int.tryParse(json['price'].toString()) ?? 0,
+          : int.tryParse("${json['price']}"),
     );
   }
-
-  Map<String, dynamic> toJson() => {
-    "_id": id,
-    "name": name,
-    "price": price,
-  };
 }
 
-/// ✅ Staff model
-class Staff {
-  final String id;
-  final String username;
-  final String email;
+class AssignedProduct {
+  final String? id;
+  final String? name;
+  final int? price;
 
-  Staff({
-    required this.id,
-    required this.username,
-    required this.email,
-  });
+  AssignedProduct({this.id, this.name, this.price});
 
-  factory Staff.fromJson(Map<String, dynamic> json) {
-    return Staff(
-      id: json['_id'] ?? '',
-      username: json['username'] ?? '',
-      email: json['email'] ?? '',
+  factory AssignedProduct.fromJson(Map<String, dynamic> json) {
+    return AssignedProduct(
+      id: json['_id'],
+      name: json['name'],
+      price: json['price'] is int
+          ? json['price']
+          : int.tryParse("${json['price']}"),
     );
   }
+}
 
-  Map<String, dynamic> toJson() => {
-    "_id": id,
-    "username": username,
-    "email": email,
-  };
+class AssignedStaff {
+  final String? id;
+  final String? username;
+  final String? email;
+
+  AssignedStaff({this.id, this.username, this.email});
+
+  factory AssignedStaff.fromJson(Map<String, dynamic> json) {
+    return AssignedStaff(
+      id: json['_id'],
+      username: json['username'],
+      email: json['email'],
+    );
+  }
 }

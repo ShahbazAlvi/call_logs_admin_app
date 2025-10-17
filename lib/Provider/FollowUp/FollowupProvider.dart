@@ -17,7 +17,7 @@ class FollowUpProvider with ChangeNotifier {
   List<FollowUpData> get followUps => _followUps;
 
   /// Replace with your actual API endpoint
-  final String apiUrl = 'https://call-logs-backend.vercel.app/api/meetings/follow-date';
+  final String apiUrl = 'https://call-logs-backend.onrender.com/api/meetings/follow-date';
 
   Future<void> fetchFollowUps() async {
     _isLoading = true;
@@ -92,7 +92,7 @@ class FollowUpProvider with ChangeNotifier {
       final timelineValue = validStatuses[status] ?? status;
 
       final url = Uri.parse(
-          'https://call-logs-backend.vercel.app/api/meetings/$id/followup');
+          'https://call-logs-backend.onrender.com/api/meetings/$id/followup');
 
       final response = await http.patch(
         url,
@@ -141,7 +141,7 @@ class FollowUpProvider with ChangeNotifier {
       notifyListeners();
 
       final url = Uri.parse(
-          'https://call-logs-backend.vercel.app/api/meetings/$id');
+          'https://call-logs-backend.onrender.com/api/meetings/$id');
 
       final response = await http.delete(
         url,

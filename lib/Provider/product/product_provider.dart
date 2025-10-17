@@ -10,7 +10,7 @@ class ProductProvider with ChangeNotifier {
   List<Data> products = [];
 
   Future<void> fetchProducts() async {
-    const url = "https://call-logs-backend.vercel.app/api/products"; // 🔹 Replace with actual API
+    const url = "https://call-logs-backend.onrender.com/api/products"; // 🔹 Replace with actual API
     isLoading = true;
     notifyListeners();
 
@@ -49,7 +49,7 @@ class ProductProvider with ChangeNotifier {
       return;
     }
     final url = Uri.parse(
-        'https://call-logs-backend.vercel.app/api/products/$productId');
+        'https://call-logs-backend.onrender.com/api/products/$productId');
     isLoading = true;
     notifyListeners();
 
@@ -91,7 +91,7 @@ class ProductProvider with ChangeNotifier {
     }
 
     final url = Uri.parse(
-        "https://call-logs-backend.vercel.app/api/products/$id");
+        "https://call-logs-backend.onrender.com/api/products/$id");
 
     var request = http.MultipartRequest('PUT', url);
 
@@ -139,7 +139,7 @@ class ProductProvider with ChangeNotifier {
       final prefs = await SharedPreferences.getInstance();
       final token = prefs.getString('token') ?? ''; // 🔹 stored token
 
-      final url = Uri.parse('https://call-logs-backend.vercel.app/api/products');
+      final url = Uri.parse('https://call-logs-backend.onrender.com/api/products');
       var request = http.MultipartRequest('POST', url);
 
       request.headers['Authorization'] = 'Bearer $token';

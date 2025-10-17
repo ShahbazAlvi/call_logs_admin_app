@@ -34,7 +34,7 @@ class DashBoardProvider with  ChangeNotifier{
     }
     isLoading =true;
     notifyListeners();
-    const url='https://call-logs-backend.vercel.app/api/dashboard/performance-summary';
+    const url='https://call-logs-backend.onrender.com/api/dashboard/performance-summary';
     try {
       final response = await http.get(
         Uri.parse(url),
@@ -96,7 +96,7 @@ class DashBoardProvider with  ChangeNotifier{
       isLoading = true;
       notifyListeners();
 
-      final url = 'https://call-logs-backend.vercel.app/api/dashboard/calendar-meetings?month=$formattedMonth';
+      final url = 'https://call-logs-backend.onrender.com/api/dashboard/calendar-meetings?month=$formattedMonth';
       final response = await http.get(
         Uri.parse(url),
         headers: {
@@ -146,7 +146,7 @@ class DashBoardProvider with  ChangeNotifier{
       return;
     }
 
-    const url = 'https://call-logs-backend.vercel.app/api/dashboard/monthly-trends';
+    const url = 'https://call-logs-backend.onrender.com/api/dashboard/monthly-trends';
     try {
       isLoading = true;
       notifyListeners();
@@ -184,7 +184,7 @@ class DashBoardProvider with  ChangeNotifier{
     isLoading=true;
     notifyListeners();
     try{
-      final response= await http.get(Uri.parse('https://call-logs-backend.vercel.app/api/products/count'));
+      final response= await http.get(Uri.parse('https://call-logs-backend.onrender.com/api/products/count'));
       if(response.statusCode==200){
         final data=jsonDecode(response.body);
         totalProducts = data['totalProducts'] ?? 0; // ✅ match your API key
@@ -214,7 +214,7 @@ class DashBoardProvider with  ChangeNotifier{
     isLoading=true;
     notifyListeners();
     try{
-      final response= await http.get(Uri.parse('https://call-logs-backend.vercel.app/api/customers/count'),
+      final response= await http.get(Uri.parse('https://call-logs-backend.onrender.com/api/customers/count'),
         headers: {
           'Authorization': "Bearer $token",
           'Accept': "application/json",
@@ -243,7 +243,7 @@ class DashBoardProvider with  ChangeNotifier{
     isLoading=true;
     notifyListeners();
     try{
-      final response= await http.get(Uri.parse('https://call-logs-backend.vercel.app/api/group-users/count'));
+      final response= await http.get(Uri.parse('https://call-logs-backend.onrender.com/api/group-users/count'));
       if(response.statusCode==200){
         final data=jsonDecode(response.body);
         totalStaffs = data['totalUsers'] ?? 0; // ✅ match your API key
@@ -273,7 +273,7 @@ class DashBoardProvider with  ChangeNotifier{
     isLoading=true;
     notifyListeners();
     try{
-      final response= await http.get(Uri.parse('https://call-logs-backend.vercel.app/api/orders/total'),
+      final response= await http.get(Uri.parse('https://call-logs-backend.onrender.com/api/orders/total'),
         headers: {
           'Authorization': "Bearer $token",
           'Accept': "application/json",
@@ -307,7 +307,7 @@ class DashBoardProvider with  ChangeNotifier{
       return;
     }
 
-    const url = 'https://call-logs-backend.vercel.app/api/dashboard/weekly-volume';
+    const url = 'https://call-logs-backend.onrender.com/api/dashboard/weekly-volume';
     try {
       isLoading = true;
       notifyListeners();

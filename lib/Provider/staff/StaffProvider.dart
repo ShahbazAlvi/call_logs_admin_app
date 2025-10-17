@@ -26,7 +26,7 @@ class StaffProvider with ChangeNotifier{
   }
 
   Future<void>fetchStaff()async{
-    const url='https://call-logs-backend.vercel.app/api/staff';
+    const url='https://call-logs-backend.onrender.com/api/staff';
     isLoading=true;
     notifyListeners();
     try{
@@ -67,7 +67,7 @@ Future<void>DeleteStaff(String staffId)async{
     notifyListeners();
     try{
 
-    final response=await http.delete(Uri.parse('https://call-logs-backend.vercel.app/api/staff/$staffId'),
+    final response=await http.delete(Uri.parse('https://call-logs-backend.onrender.com/api/staff/$staffId'),
       headers: {
         'Authorization': "Bearer $token",
         'Accept': "application/json",
@@ -109,7 +109,7 @@ Future<void>DeleteStaff(String staffId)async{
 
       var request = http.MultipartRequest(
         'POST',
-        Uri.parse('https://call-logs-backend.vercel.app/api/staff'), // your local API
+        Uri.parse('https://call-logs-backend.onrender.com/api/staff'), // your local API
       );
 
       // Authorization token
@@ -146,6 +146,68 @@ Future<void>DeleteStaff(String staffId)async{
     } finally {
       isLoading = false;
       notifyListeners();
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+  Future<void> updateStaff({
+    required String id,
+    required String username,
+    required String email,
+    required String number,
+    required String department,
+    required String address,
+    File? image,
+  }) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final token = prefs.getString('token'); // 🔑 get saved token
+
+      if (token == null || token.isEmpty) {
+        debugPrint("❌ No token found in SharedPreferences");
+        return;
+      }
+
+      final uri = Uri.parse("https://call-logs-backend.onrender.com/api/staff/$id");
+      var request = http.MultipartRequest('PUT', uri);
+
+      // ✅ Add token in headers
+      request.headers['Authorization'] = 'Bearer $token';
+      request.headers['Accept'] = 'application/json';
+
+      // Add text fields
+      request.fields['username'] = username;
+      request.fields['email'] = email;
+      request.fields['number'] = number;
+      request.fields['department'] = department;
+      request.fields['address'] = address;
+
+      // Add image if selected
+      if (image != null) {
+        request.files.add(await http.MultipartFile.fromPath('image', image.path));
+      }
+
+      final response = await request.send();
+
+      if (response.statusCode == 200) {
+        debugPrint("✅ Staff updated successfully");
+        await fetchStaff(); // refresh list (assuming you have this method)
+      } else {
+        final resBody = await response.stream.bytesToString();
+        debugPrint("❌ Failed to update staff: ${response.statusCode}");
+        debugPrint("Response: $resBody");
+      }
+    } catch (e) {
+      debugPrint("⚠️ Error updating staff: $e");
     }
   }
 

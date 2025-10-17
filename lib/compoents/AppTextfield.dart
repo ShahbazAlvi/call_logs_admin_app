@@ -30,7 +30,7 @@ class _AppTextFieldState extends State<AppTextField> {
         keyboardType: widget.keyboardType,
         decoration: InputDecoration(
           hintText: widget.label,
-            prefixIcon: widget.icon != null ? Icon(widget.icon, color: Colors.blue) : null,
+            prefixIcon: widget.icon != null ? Icon(widget.icon, color: Colors.indigo) : null,
           suffixIcon: widget.icons!=null?IconButton(onPressed: widget.onToggleVisibility, icon: Icon(widget.icons)):null,
           border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),

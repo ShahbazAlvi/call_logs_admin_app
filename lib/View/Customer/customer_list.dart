@@ -73,6 +73,7 @@ import 'package:provider/provider.dart';
 import '../../Provider/customer/customer_provider.dart';
 import 'add_customer.dart';
 import 'customer detail.dart';
+import 'customerUpdate.dart';
 
 class CompanyListScreen extends StatefulWidget {
   const CompanyListScreen({super.key});
@@ -98,7 +99,7 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
       appBar: AppBar(
         backgroundColor: Colors.indigo,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text('Customers List',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
+        title: Center(child: const Text('Customers List',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
         actions: [
           IconButton(
             icon: const Icon(Icons.add),
@@ -122,73 +123,84 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
             elevation: 3,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8)),
-            child: ListTile(
-              leading: c.companyLogo != null
-                  ? ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  c.companyLogo!.url,
-                  width: 50,
-                  height: 50,
-                  fit: BoxFit.cover,
+            child: GestureDetector(
+              onTap:(){
+               // Navigate to detail/edit screen
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        CompanyDetailScreen(company: c),
+                  ),
+                );
+              } ,
+              child: ListTile(
+                leading: c.companyLogo != null
+                    ? ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    c.companyLogo!.url,
+                    width: 50,
+                    height: 50,
+                    fit: BoxFit.cover,
+                  ),
+                )
+                    : const Icon(Icons.business, size: 40),
+                title: Text(
+                  c.companyName,
+                  style: const TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 16),
                 ),
-              )
-                  : const Icon(Icons.business, size: 40),
-              title: Text(
-                c.companyName,
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-              subtitle: Text('${c.businessType} • ${c.city}'),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // 🟢 Edit Button
-                  IconButton(
-                    icon: const Icon(Icons.edit, color: Colors.blue),
-                    onPressed: () {
-                      // Navigate to detail/edit screen
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              CompanyDetailScreen(company: c),
-                        ),
-                      );
-                    },
-                  ),
+                subtitle: Text('${c.businessType} • ${c.city}'),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 🟢 Edit Button
+                    IconButton(
+                      icon: const Icon(Icons.edit, color: Colors.blue),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => UpdateCustomerScreen(customerId: c.id),
+                          ),
+                        );
+                      },
 
-                  // 🔴 Delete Button
-                  IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () async {
-                      final confirm = await showDialog<bool>(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: const Text('Delete Company'),
-                          content: Text(
-                              'Are you sure you want to delete "${c.companyName}"?'),
-                          actions: [
-                            TextButton(
-                              onPressed: () =>
-                                  Navigator.pop(context, false),
-                              child: const Text('Cancel'),
-                            ),
-                            ElevatedButton(
-                              onPressed: () =>
-                                  Navigator.pop(context, true),
-                              child: const Text('Delete'),
-                            ),
-                          ],
-                        ),
-                      );
+                    ),
 
-                      if (confirm == true) {
-                        provider.deleteCompany(c.id);
-                      }
-                    },
-                  ),
-                ],
+                    // 🔴 Delete Button
+                    IconButton(
+                      icon: const Icon(Icons.delete, color: Colors.red),
+                      onPressed: () async {
+                        final confirm = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Delete Company'),
+                            content: Text(
+                                'Are you sure you want to delete "${c.companyName}"?'),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, false),
+                                child: const Text('Cancel'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, true),
+                                child: const Text('Delete'),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (confirm == true) {
+                          provider.deleteCompany(c.id);
+                        }
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           );

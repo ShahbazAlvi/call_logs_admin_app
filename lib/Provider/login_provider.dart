@@ -32,7 +32,7 @@ class LoginProvider with ChangeNotifier{
     notifyListeners();
 
       try{
-        final response=await http.post(Uri.parse('https://call-logs-backend.vercel.app/api/auth/login'),
+        final response=await http.post(Uri.parse('https://call-logs-backend.onrender.com/api/auth/login'),
             headers: {"Content-Type": "application/json"},
 
             body: jsonEncode({

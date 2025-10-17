@@ -56,7 +56,9 @@ class CompanyProvider with ChangeNotifier {
   final assignedStaffController = TextEditingController();
   final assignedProductsController = TextEditingController();
 
-  final String baseUrl = 'https://call-logs-backend.vercel.app/api/customers';
+  final String baseUrl = 'https://call-logs-backend.onrender.com/api/customers';
+  final String baseUri = 'https://call-logs-backend.onrender.com/api/customers';
+
 
 
 
@@ -113,7 +115,7 @@ class CompanyProvider with ChangeNotifier {
       notifyListeners();
 
       final response = await http.delete(
-        Uri.parse('https://call-logs-backend.vercel.app/api/customers/$id'),
+        Uri.parse('https://call-logs-backend.onrender.com/api/customers/$id'),
         headers: {
           'Authorization': 'Bearer $token', // add your token
         },
@@ -135,7 +137,8 @@ class CompanyProvider with ChangeNotifier {
     }
   }
 
-  final String apiUrl = 'https://call-logs-backend.vercel.app/api/customers';
+  final String apiUrl = 'https://call-logs-backend.onrender.com/api/customers';
+  final String apiUri = 'https://call-logs-backend.onrender.com/api/customers';
   Future<void> pickImage() async {
     final picked = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (picked != null) {
@@ -237,4 +240,128 @@ class CompanyProvider with ChangeNotifier {
     }
     notifyListeners();
   }
+
+
+
+
+  Future<void> UpdateCustomer(String customerId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+
+    if (token == null) {
+      message = "❌ No token found";
+      notifyListeners();
+      return;
+    }
+
+    try {
+      isLoading = true;
+      message = '';
+      notifyListeners();
+
+      final url = Uri.parse('$baseUri/$customerId'); // ✅ Append ID here
+      final request = http.MultipartRequest('PUT', url); // ✅ Correct method
+      request.headers['Authorization'] = 'Bearer $token';
+
+      // ✅ Basic company details
+      request.fields['businessType'] = businessTypeController.text.trim();
+      request.fields['companyName'] = companyNameController.text.trim();
+      request.fields['address'] = addressController.text.trim();
+      request.fields['city'] = cityController.text.trim();
+      request.fields['email'] = emailController.text.trim();
+      request.fields['phoneNumber'] = phoneController.text.trim();
+      request.fields['assignedStaff'] = selectedStaffId ?? '';
+      request.fields['assignedProducts'] = selectedProductId ?? '';
+
+      // ✅ Multiple persons
+      for (int i = 0; i < personsList.length; i++) {
+        final person = personsList[i];
+        request.fields['persons[$i][fullName]'] = person['fullName']!.text.trim();
+        request.fields['persons[$i][designation]'] = person['designation']!.text.trim();
+        request.fields['persons[$i][department]'] = person['department']!.text.trim();
+        request.fields['persons[$i][phoneNumber]'] = person['phoneNumber']!.text.trim();
+        request.fields['persons[$i][email]'] = person['email']!.text.trim();
+      }
+
+      // ✅ Add logo (if selected)
+      if (companyLogo != null) {
+        request.files.add(await http.MultipartFile.fromPath(
+          'companyLogo',
+          companyLogo!.path,
+        ));
+      }
+
+      // ✅ Send the request
+      final response = await request.send();
+      final respStr = await response.stream.bytesToString();
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        fetchCompanies();
+        message = '✅ Customer updated successfully';
+      } else {
+        message = '❌ Failed: ${response.statusCode}\n$respStr';
+      }
+    } catch (e) {
+      message = 'Error: $e';
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+
+
+
+  Future<void> fetchCustomerById(String id) async {
+    final prefs = await SharedPreferences.getInstance();
+    final token = prefs.getString('token');
+    if (token == null) return;
+
+    try {
+      isLoading = true;
+      notifyListeners();
+
+      final response = await http.get(
+        Uri.parse('https://call-logs-backend.onrender.com/api/customers/$id'),
+        headers: {'Authorization': 'Bearer $token'},
+      );
+
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+        final data = result['data'];
+
+        businessTypeController.text = data['businessType'] ?? '';
+        companyNameController.text = data['companyName'] ?? '';
+        addressController.text = data['address'] ?? '';
+        cityController.text = data['city'] ?? '';
+        emailController.text = data['email'] ?? '';
+        phoneController.text = data['phoneNumber'] ?? '';
+
+        selectedStaffId = data['assignedStaff']?['_id'];
+        selectedProductId = data['assignedProducts']?['_id'];
+
+        personsList = [];
+        if (data['persons'] != null) {
+          for (var p in data['persons']) {
+            personsList.add({
+              'fullName': TextEditingController(text: p['fullName'] ?? ''),
+              'designation': TextEditingController(text: p['designation'] ?? ''),
+              'department': TextEditingController(text: p['department'] ?? ''),
+              'phoneNumber': TextEditingController(text: p['phoneNumber'] ?? ''),
+              'email': TextEditingController(text: p['email'] ?? ''),
+            });
+          }
+        }
+      } else {
+        print("Failed to fetch customer data: ${response.body}");
+      }
+    } catch (e) {
+      print("Error: $e");
+    } finally {
+      isLoading = false;
+      notifyListeners();
+    }
+  }
+
+
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:infinity/View/staff/create_staff.dart';
+import 'package:infinity/View/staff/updateScreenStaff.dart';
 import 'package:provider/provider.dart';
 
 import '../../Provider/staff/StaffProvider.dart';
@@ -85,9 +86,17 @@ class _StaffScreenState extends State<StaffScreen> {
                   Column(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => EditStaffScreen(staff: staff),
+                            ),
+                          );
+                        },
                         icon: const Icon(Icons.edit, color: Colors.blue),
                       ),
+
                       IconButton(
                         icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () async {

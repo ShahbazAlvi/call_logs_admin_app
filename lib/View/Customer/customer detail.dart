@@ -9,7 +9,10 @@ class CompanyDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(company.companyName)),
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Colors.indigo,
+          title: Text(company.companyName,style: TextStyle(color: Colors.white),)),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
