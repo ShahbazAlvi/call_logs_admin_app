@@ -8,6 +8,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 
 import '../../Provider/dashboard_provider.dart';
+import '../AssignScreen/AssignCustomer.dart';
 import '../Customer/customer_list.dart';
 import '../Meeting_calender/MeetingCalender.dart';
 import '../followUpScreen/FollowUpScreen.dart';
@@ -97,6 +98,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
               title: const Text('Follow Up'),
               onTap: () {
                 Navigator.push(context,MaterialPageRoute(builder: (context)=>FollowUpScreen()));
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.dashboard, color: Colors.indigo),
+              title: const Text('Assign To'),
+              onTap: () {
+                Navigator.push(context,MaterialPageRoute(builder: (context)=> UnassignCustomerScreen()));
               },
             ),
 
