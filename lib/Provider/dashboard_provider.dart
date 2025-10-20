@@ -21,6 +21,30 @@ class DashBoardProvider with  ChangeNotifier{
   List<Map<String, dynamic>> weeklyData = [];
   int totalWeeklyCalls = 0;
 
+
+
+
+
+  Future<void> loadAllDashboardData() async {
+    isLoading = true;
+    notifyListeners();
+
+    await Future.wait([
+      Performance_Summary(),
+      fetchCalendarMeetings(),
+      fetchMonthlyTrends(),
+      fetchWeeklyTrends(),
+      CountProduct(),
+      CountCustomer(),
+      CountStaff(),
+      CountTransaction(),
+    ]);
+
+    isLoading = false;
+    notifyListeners();
+  }
+
+
   Future<void>Performance_Summary()async{
     final prefs = await SharedPreferences.getInstance();
     final token = prefs.getString('token');

@@ -12,7 +12,7 @@ class AppTextField extends StatefulWidget {
     required this.label,
     this.keyboardType,
     this.icon, this.icons,
-    this.onToggleVisibility});
+    this.onToggleVisibility, required String? Function(dynamic value) validator});
 
   @override
   State<AppTextField> createState() => _AppTextFieldState();

@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'package:http/http.dart'as http;
+
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -47,7 +52,7 @@ class _EditMeetingScreenState extends State<EditMeetingScreen> {
   Future<void> _launchPhone(String phoneNumber) async {
     var cleaned = phoneNumber.replaceAll(RegExp(r'[^0-9+]'), '');
     if (cleaned.startsWith('0')) {
-      cleaned = '92${cleaned.substring(1)}'; // Add Pakistan country code
+      cleaned = '0${cleaned.substring(1)}'; // Add Pakistan country code
     }
     final Uri phoneUri = Uri(scheme: 'tel', path: cleaned);
 
@@ -76,6 +81,8 @@ class _EditMeetingScreenState extends State<EditMeetingScreen> {
       debugPrint('❌ Could not open WhatsApp for $cleaned');
     }
   }
+  final TextEditingController locationController = TextEditingController();
+
 
 
 
@@ -209,6 +216,28 @@ class _EditMeetingScreenState extends State<EditMeetingScreen> {
                 },
               ),
             ),
+            const SizedBox(height: 20),
+            Text("📍 Current Location", style: labelStyle()),
+            Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: locationController,
+                    readOnly: true,
+                    maxLines: 2,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: "No location selected yet",
+                    ),
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.location_searching, color: Colors.indigo),
+                  onPressed: _getCurrentLocationAndAddress,
+                ),
+              ],
+            ),
+
           ],
         ),
       ),
@@ -241,4 +270,105 @@ class _EditMeetingScreenState extends State<EditMeetingScreen> {
 
   TextStyle labelStyle() =>
       const TextStyle(fontWeight: FontWeight.bold, fontSize: 15);
+
+
+  Future<void> _getCurrentLocationAndAddress() async {
+    try {
+      bool serviceEnabled;
+      LocationPermission permission;
+
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("❌ Location services are disabled.")),
+        );
+        return;
+      }
+
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("❌ Location permission denied.")),
+          );
+          return;
+        }
+      }
+
+      if (permission == LocationPermission.deniedForever) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("❌ Location permission permanently denied.")),
+        );
+        return;
+      }
+
+      // Get location
+      final position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+
+      // Get address using geocoding
+      final placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      final place = placemarks.first;
+      final address =
+          "${place.street ?? ''}, ${place.locality ?? ''}, ${place.administrativeArea ?? ''}, ${place.country ?? ''}";
+
+      // Update TextFormField
+      setState(() {
+        locationController.text =
+        "Lat: ${position.latitude}, Lng: ${position.longitude}\n$address";
+      });
+
+      debugPrint('📍 Location fetched: $address');
+    } catch (e) {
+      debugPrint('❌ Error getting location: $e');
+    }
+  }
+
+
+
+  Future<void> _postContactLog({
+    required String type,
+    required String phoneNumber,
+    required String companyName,
+    required String username,
+  }) async {
+    try {
+      final now = DateTime.now();
+      final formattedDateTime = DateFormat('yyyy-MM-dd HH:mm:ss').format(now);
+
+      final Map<String, dynamic> data = {
+        "contact_type": type,
+        "phone_number": phoneNumber,
+        "company_name": companyName,
+        "username": username,
+        "datetime": formattedDateTime,
+        "location": locationController.text, // 🟢 Send full text (lat/lng + address)
+      };
+
+      debugPrint('📤 Sending contact log: $data');
+
+      final url = Uri.parse("https://your-api-domain.com/api/saveContactLog");
+      final response = await http.post(
+        url,
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(data),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        debugPrint('✅ Contact log saved successfully!');
+      } else {
+        debugPrint('❌ Failed to save contact log: ${response.statusCode}');
+      }
+    } catch (e) {
+      debugPrint('❌ Error posting contact log: $e');
+    }
+  }
+
+
 }

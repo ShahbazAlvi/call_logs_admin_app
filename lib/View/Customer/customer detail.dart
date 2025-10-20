@@ -10,9 +10,26 @@ class CompanyDetailScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: Colors.indigo,
-          title: Text(company.companyName,style: TextStyle(color: Colors.white),)),
+        title: Center(
+            child:  Text(company.companyName,style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+              letterSpacing: 1.2,
+            ))),
+        centerTitle: true,
+        elevation: 6,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF5B86E5), Color(0xFF36D1DC)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -43,7 +60,6 @@ class CompanyDetailScreen extends StatelessWidget {
               ListTile(
                 leading: const Icon(Icons.shopping_bag),
                 title: Text(company.assignedProducts!.name),
-                subtitle: Text(company.assignedProducts!.id),
               ),
             const SizedBox(height: 16),
             Text('Persons', style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),

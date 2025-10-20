@@ -41,6 +41,13 @@ dependencies:
   table_calendar: ^3.2.0
   image_picker: ^1.2.0
   url_launcher: ^6.3.2
+  flutter_launcher_icons: ^0.14.4
+  geolocator: ^14.0.2
+  geocoding: ^4.0.0
+flutter_icons:
+    android: true
+    ios: true
+    image_path: "assets/images/logs.png"
 
 dev_dependencies:
   flutter_test:
