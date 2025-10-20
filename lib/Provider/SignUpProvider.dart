@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:infinity/View/Auths/Login_screen.dart';
 
 class SignUpProvider with ChangeNotifier {
   bool isLoading = false;
@@ -12,7 +13,7 @@ class SignUpProvider with ChangeNotifier {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController cpasswordController = TextEditingController();
 
-  Future<Map<String, dynamic>> signUp() async {
+  Future<Map<String, dynamic>> signUp(BuildContext context) async {
     isLoading = true;
     message = "";
     notifyListeners();
@@ -38,6 +39,9 @@ class SignUpProvider with ChangeNotifier {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         message = "✅ Registration successful!";
+
+        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginScreen()));
+
         notifyListeners();
         return {'success': true, 'data': json.decode(response.body)};
       } else {

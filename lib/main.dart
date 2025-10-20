@@ -8,6 +8,7 @@ import 'Provider/AssignCustomerProvider/AssignProvider.dart';
 import 'Provider/FollowUp/FollowupProvider.dart';
 import 'Provider/MeetingProvider/NoDateMeetingProvider.dart';
 import 'Provider/MeetingProvider/Meeting_provider.dart';
+import 'Provider/SignUpProvider.dart';
 import 'Provider/callLogsProvider/callLogsProvider.dart';
 import 'Provider/customer/customer_provider.dart';
 import 'Provider/dashboard_provider.dart';
@@ -28,6 +29,7 @@ void main() {
       ChangeNotifierProvider(create: (_) => FollowUpProvider()),
       ChangeNotifierProvider(create: (_) => UnassignCustomerProvider()),
       ChangeNotifierProvider(create: (_) => CallLogsProvider()),
+      ChangeNotifierProvider(create: (_) => SignUpProvider()),
     ],
     child: MyApp(),)
   );

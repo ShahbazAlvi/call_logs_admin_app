@@ -1,5 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:infinity/Provider/login_provider.dart';
+import 'package:infinity/View/Auths/Sign_up.dart';
 import 'package:infinity/compoents/AppButton.dart';
 import 'package:infinity/compoents/AppTextfield.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SizedBox(height:screenHeight*0.07),
               Text('Admin Login',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               Text("Login to continue"),
               SizedBox(height: screenHeight*0.02,),
@@ -42,7 +45,28 @@ class _LoginScreenState extends State<LoginScreen> {
               }, width: double.infinity),
               SizedBox(height: screenHeight * 0.02),
               if(loginProvider.message.isNotEmpty)
-                Center(child: Text(loginProvider.message,style: TextStyle(color: Colors.red),),)
+                Center(child: Text(loginProvider.message,style: TextStyle(color: Colors.red),),),
+              RichText(text: TextSpan(
+                text: "Don't have an account? ",
+                style: const TextStyle(
+                  color: Colors.black87,
+                  fontSize: 16,
+                ),
+                children: [
+                  TextSpan(
+                    text: 'Sign up',
+                    style: const TextStyle(
+                      color: Colors.blue, // clickable text color
+                      fontWeight: FontWeight.bold,
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        // 👇 navigate to your sign-up screen
+                        Navigator.pushReplacement(context,MaterialPageRoute(builder:(context)=>SignUp()));
+                      },
+                  ),
+                ],
+              ))
 
             ],
           ),

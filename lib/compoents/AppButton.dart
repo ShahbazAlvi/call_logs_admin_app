@@ -20,7 +20,7 @@ class AppButton extends StatelessWidget {
         height:screenHeight*0.08,
         width: width ?? double.infinity,
         decoration:  BoxDecoration(
-          color: Colors.indigo,
+          color: Color(0xFF5B86E5),
           borderRadius: BorderRadius.circular(10),
 
         ),
