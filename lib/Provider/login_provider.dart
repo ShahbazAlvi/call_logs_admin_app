@@ -46,7 +46,10 @@ class LoginProvider with ChangeNotifier{
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('token', data["token"]);
           await prefs.setString('username',data['user']['username']);
+          await prefs.setString('role',data['user']['role']);
           await prefs.setString('user', jsonEncode(data["user"]));
+
+
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(builder: (context) => Splashscreen()),

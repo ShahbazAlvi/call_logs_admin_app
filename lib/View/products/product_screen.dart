@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:infinity/model/productModel.dart' hide Image;
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../Provider/product/product_provider.dart';
 import 'Add_product.dart';
@@ -18,12 +19,20 @@ class ProductScreen extends StatefulWidget {
 }
 
 class _ProductScreenState extends State<ProductScreen> {
+  String? userRole;
   @override
   void initState() {
     super.initState();
+    _loadUserRole();
     // Fetch API on start
     Future.microtask(() =>
         Provider.of<ProductProvider>(context, listen: false).fetchProducts());
+  }
+  Future<void> _loadUserRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userRole = prefs.getString('role'); // 👈 e.g. "admin" or "staff"
+    });
   }
 
   @override
@@ -54,6 +63,7 @@ class _ProductScreenState extends State<ProductScreen> {
         ),
         iconTheme: const IconThemeData(color: Colors.white),
         actions: [
+          if (userRole == 'admin')
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             child: ElevatedButton.icon(
@@ -157,6 +167,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     ),
                   ),
                 ),
+                if (userRole == 'admin')
                 Row(
                   children: [
                     IconButton(

@@ -13,6 +13,8 @@ import '../AssignScreen/AssignCustomer.dart';
 import '../Auths/Login_screen.dart';
 import '../Customer/customer_list.dart';
 import '../Meeting_calender/MeetingCalender.dart';
+import '../SuccessClientScreen/successClientProvider.dart';
+import '../call_logs_track/call_logs_track.dart';
 import '../followUpScreen/FollowUpScreen.dart';
 import '../monthly chats.dart';
 import '../products/product_screen.dart';
@@ -26,10 +28,12 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  String? userRole;
   @override
   @override
   void initState() {
     super.initState();
+    _loadUserRole();
     Future.microtask(() {
       final provider = Provider.of<DashBoardProvider>(context, listen: false);
       provider.loadAllDashboardData();
@@ -38,6 +42,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Future<String?> _getUsername() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('username');
+  }
+  Future<void> _loadUserRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userRole = prefs.getString('role') ?? 'user'; // default = user
+    });
+    debugPrint("✅ User role loaded: $userRole");
   }
 
 
@@ -157,12 +168,30 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     MaterialPageRoute(builder: (context) => FollowUpScreen()));
               },
             ),
+            if (userRole == 'admin')
             ListTile(
               leading: const Icon(Icons.assignment_ind, color: Color(0xFF5B86E5)),
               title: const Text('Assign To'),
               onTap: () {
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => UnassignCustomerScreen()));
+              },
+            ),
+            if (userRole == 'admin')
+              ListTile(
+                leading: const Icon(Icons.phone, color: Color(0xFF5B86E5)),
+                title: const Text('Call Track'),
+                onTap: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => CallLogsScreen()));
+                },
+              ),
+            ListTile(
+              leading: const Icon(Icons.done, color: Color(0xFF5B86E5)),
+              title: const Text('Success Client'),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SuccessClientScreen()));
               },
             ),
             ListTile(

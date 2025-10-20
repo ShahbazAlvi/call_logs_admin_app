@@ -70,6 +70,7 @@
 // }
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Provider/customer/customer_provider.dart';
 import 'add_customer.dart';
 import 'customer detail.dart';
@@ -83,11 +84,19 @@ class CompanyListScreen extends StatefulWidget {
 }
 
 class _CompanyListScreenState extends State<CompanyListScreen> {
+  String? userRole;
   @override
   void initState() {
     super.initState();
+    _loadUserRole();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Provider.of<CompanyProvider>(context, listen: false).fetchCompanies();
+    });
+  }
+  Future<void> _loadUserRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userRole = prefs.getString('role') ?? 'user'; // default = user
     });
   }
 
@@ -202,8 +211,10 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
 
                     ),
 
+                    //
                     // 🔴 Delete Button
-                    IconButton(
+                    if (userRole == 'admin')
+                      IconButton(
                       icon: const Icon(Icons.delete, color: Colors.red),
                       onPressed: () async {
                         final confirm = await showDialog<bool>(

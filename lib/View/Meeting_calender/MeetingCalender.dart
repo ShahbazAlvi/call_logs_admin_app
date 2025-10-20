@@ -36,13 +36,37 @@ class _UpcomingMeetingsScreenState extends State<UpcomingMeetingsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.indigo,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: Text(
-          "$currentMonth - All Meetings",
-          style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+
+
+        title: Center(child: Text( "$currentMonth - All Meetings",
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+              letterSpacing: 1.2,
+            )),
         ),
+        centerTitle: true,
+        elevation: 6,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF5B86E5), Color(0xFF36D1DC)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.indigo,
+      //   iconTheme: const IconThemeData(color: Colors.white),
+      //   title: Text(
+      //     "$currentMonth - All Meetings",
+      //     style: const TextStyle(fontWeight: FontWeight.bold,color: Colors.white),
+      //   ),
+      // ),
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(

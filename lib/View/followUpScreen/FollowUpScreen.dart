@@ -87,7 +87,9 @@
 // }
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../Provider/FollowUp/FollowupProvider.dart';
+import '../../model/FollowUpModel.dart';
 
 class FollowUpScreen extends StatefulWidget {
   const FollowUpScreen({super.key});
@@ -97,13 +99,22 @@ class FollowUpScreen extends StatefulWidget {
 }
 
 class _FollowUpScreenState extends State<FollowUpScreen> {
+  String? userRole;
   @override
   void initState() {
     super.initState();
+    _loadUserRole();
     Future.microtask(() {
       final provider = Provider.of<FollowUpProvider>(context, listen: false);
       provider.fetchFollowUps();
     });
+  }
+  Future<void> _loadUserRole() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userRole = prefs.getString('role') ?? 'user'; // default = user
+    });
+
   }
 
   @override
@@ -112,11 +123,26 @@ class _FollowUpScreenState extends State<FollowUpScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: const Center(
-          child: Text('Follow Ups', style: TextStyle(color: Colors.white)),
+        title: Center(child: const Text('Follow Up',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+              letterSpacing: 1.2,
+            )),
         ),
-        backgroundColor: Colors.indigo,
+        centerTitle: true,
+        elevation: 6,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF5B86E5), Color(0xFF36D1DC)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
@@ -149,7 +175,7 @@ class _FollowUpScreenState extends State<FollowUpScreen> {
                 borderRadius: BorderRadius.circular(12)),
             child: ListTile(
               leading:
-              const Icon(Icons.business, color: Colors.indigo),
+              const Icon(Icons.business, color: Color(0xFF5B86E5)),
               title: Text(
                 item.companyName,
                 style: const TextStyle(
@@ -170,15 +196,22 @@ class _FollowUpScreenState extends State<FollowUpScreen> {
               trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
+                  IconButton(
+                    icon: const Icon(Icons.remove_red_eye, color: Colors.teal),
+                    onPressed: () {
+                      _showDetailsDialog(context, item);
+                    },
+                  ),
                   // 🔹 Update Button
                   IconButton(
                     icon: const Icon(Icons.edit,
-                        color: Colors.green),
+                        color: Color(0xFF5B86E5)),
                     onPressed: () {
                       _showUpdateDialog(context, item, provider);
                     },
                   ),
                   // 🔹 Delete Button
+                  if (userRole == 'admin')
                   IconButton(
                     icon: const Icon(Icons.delete, color: Colors.red),
                     onPressed: () async {
@@ -261,7 +294,7 @@ class _FollowUpScreenState extends State<FollowUpScreen> {
                   controller: dateController,
                   readOnly: true,
                   decoration: InputDecoration(
-                    labelText: 'Date',
+                    labelText: 'Next Follow Up Date',
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.calendar_today),
@@ -286,7 +319,7 @@ class _FollowUpScreenState extends State<FollowUpScreen> {
                   controller: timeController,
                   readOnly: true,
                   decoration: InputDecoration(
-                    labelText: 'Time',
+                    labelText: 'Next Follow Up Time',
                     border: const OutlineInputBorder(),
                     suffixIcon: IconButton(
                       icon: const Icon(Icons.access_time),
@@ -346,12 +379,127 @@ class _FollowUpScreenState extends State<FollowUpScreen> {
                 );
                 Navigator.pop(context);
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.indigo),
-              child: const Text('Update'),
+              style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF5B86E5)),
+              child: const Text('Update',style: TextStyle(color:Colors.white),),
             ),
           ],
         );
       },
+    );
+  }
+
+
+
+
+
+  void _showDetailsDialog(BuildContext context, FollowUpData item) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        final productName = item.product?.name ?? '-';
+        final price = item.product?.price?.toString() ?? '-';
+        final staffName = item.person?.assignedStaff?.username ?? 'Unassigned';
+        final contactMethod = item.contactMethod ?? '-';
+        final designation = item.designation ?? '-';
+        final referToStaff = item.referToStaff ?? '-';
+        final reference = item.reference ?? '-';
+
+        final persons = item.person?.persons ?? [];
+        final dates = item.followDates.join(', ');
+        final times = item.followTimes.join(', ');
+        final details = item.details.join('\n');
+
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+          title: Row(
+            children: const [
+              Icon(Icons.business, color: Color(0xFF5B86E5)),
+              SizedBox(width: 8),
+              Text(
+                'Company Details',
+                style: TextStyle(fontWeight: FontWeight.bold),
+              ),
+            ],
+          ),
+
+          // 👇 Add height constraint + scroll
+          content: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.7,
+            ),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _infoRow('🏢 Company', item.companyName),
+                  _infoRow('🧑‍💼 Staff', staffName),
+                  _infoRow('📦 Product', productName),
+                  _infoRow('💰 Price', price),
+                  _infoRow('📞 Contact Method', contactMethod),
+                  _infoRow('🎯 Status', item.status),
+                  _infoRow('🕓 Follow Dates', dates),
+                  _infoRow('⏰ Follow Times', times),
+                  _infoRow('📝 Action', item.action ?? '-'),
+                  _infoRow('📋 Details', details.isNotEmpty ? details : '-'),
+
+                  const Divider(),
+
+                  const Text(
+                    '👥 Person Details:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  const SizedBox(height: 6),
+
+                  // 👇 List of persons
+                  ...persons.map((p) => Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Text(
+                      '• ${p.fullName} (${p.phoneNumber})',
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                  )),
+
+                  if (persons.isEmpty)
+                    const Text('No person details available',
+                        style: TextStyle(color: Colors.grey)),
+
+                  const Divider(),
+
+                  _infoRow('🏷️ Designation', designation),
+                  _infoRow('👨‍💻 Refer to Staff', referToStaff),
+                  _infoRow('🔗 Reference', reference),
+                ],
+              ),
+            ),
+          ),
+
+          actions: [
+            TextButton(
+              child: const Text('Close', style: TextStyle(color: Colors.indigo)),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Widget _infoRow(String title, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 140,
+            child: Text(
+              title,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+          Expanded(child: Text(value)),
+        ],
+      ),
     );
   }
 

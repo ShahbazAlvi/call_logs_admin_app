@@ -1,114 +1,4 @@
-// import 'package:flutter/material.dart';
-// import 'package:provider/provider.dart';
-//
-// import '../../Provider/AssignCustomerProvider/AssignProvider.dart';
-//
-//
-// class UnassignCustomerScreen extends StatefulWidget {
-//   const UnassignCustomerScreen({super.key});
-//
-//   @override
-//   State<UnassignCustomerScreen> createState() => _UnassignCustomerScreenState();
-// }
-//
-// class _UnassignCustomerScreenState extends State<UnassignCustomerScreen> {
-//   @override
-//   void initState() {
-//     super.initState();
-//     Future.microtask(() =>
-//         Provider.of<UnassignCustomerProvider>(context, listen: false)
-//             .fetchUnassignedCustomers());
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final provider = Provider.of<UnassignCustomerProvider>(context);
-//
-//     return Scaffold(
-//       appBar: AppBar(
-//         iconTheme: IconThemeData(color: Colors.white),
-//         backgroundColor: Colors.indigo,
-//         title: provider.selectedIds.isEmpty
-//             ? const Text('Unassigned Customers',style: TextStyle(color: Colors.white),)
-//             : Text('Selected: ${provider.selectedIds.length}',style: TextStyle(color: Colors.white),),
-//         actions: [
-//           if (provider.selectedIds.isNotEmpty)
-//             IconButton(
-//               icon: const Icon(Icons.person_add_alt_1),
-//               onPressed: () async {
-//                 await provider.assignSelectedCustomers();
-//                 ScaffoldMessenger.of(context).showSnackBar(
-//                   const SnackBar(content: Text('Customers Assigned Successfully')),
-//                 );
-//               },
-//             )
-//         ],
-//       ),
-//       body: provider.isLoading
-//           ? const Center(child: CircularProgressIndicator())
-//           : Column(
-//         children: [
-//           // 🔍 Search Bar
-//           Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: TextField(
-//               onChanged: provider.searchCustomer,
-//               decoration: InputDecoration(
-//                 hintText: 'Search company...',
-//                 prefixIcon: const Icon(Icons.search),
-//                 border: OutlineInputBorder(
-//                   borderRadius: BorderRadius.circular(10),
-//                 ),
-//               ),
-//             ),
-//           ),
-//           // 📋 List
-//           Expanded(
-//             child: ListView.builder(
-//               itemCount: provider.customers.length,
-//               itemBuilder: (context, index) {
-//                 final item = provider.customers[index];
-//                 final person =
-//                 (item.persons != null && item.persons!.isNotEmpty)
-//                     ? item.persons!.first.fullName ?? 'N/A'
-//                     : 'N/A';
-//                 final phone =
-//                 (item.persons != null && item.persons!.isNotEmpty)
-//                     ? item.persons!.first.phoneNumber ?? 'N/A'
-//                     : 'N/A';
-//
-//                 return Card(
-//                   margin:
-//                   const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-//                   shape: RoundedRectangleBorder(
-//                       borderRadius: BorderRadius.circular(12)),
-//                   elevation: 3,
-//                   child: ListTile(
-//                     leading: Checkbox(
-//                       value: provider.selectedIds.contains(item.id),
-//                       onChanged: (_) => provider.toggleSelection(item.id!),
-//                     ),
-//                     title: Text(item.companyName ?? 'Unknown Company',
-//                         style:
-//                         const TextStyle(fontWeight: FontWeight.bold)),
-//                     subtitle: Column(
-//                       crossAxisAlignment: CrossAxisAlignment.start,
-//                       children: [
-//                         Text('Business: ${item.businessType ?? '-'}'),
-//                         Text('Person: $person'),
-//                         Text('Phone: $phone'),
-//                       ],
-//                     ),
-//                   ),
-//                 );
-//               },
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../Provider/AssignCustomerProvider/AssignProvider.dart';
@@ -235,7 +125,7 @@ class _UnassignCustomerScreenState extends State<UnassignCustomerScreen> {
                   );
                 }
               },
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.indigo),
+              style: ElevatedButton.styleFrom(backgroundColor: Color(0xFF5B86E5)),
               child: const Text('Assign', style: TextStyle(color: Colors.white)),
             ),
           ],
@@ -250,21 +140,51 @@ class _UnassignCustomerScreenState extends State<UnassignCustomerScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.indigo,
-        title: Text(
-          provider.selectedIds.isEmpty
-              ? 'Unassigned Customers'
-              : 'Selected: ${provider.selectedIds.length}',
-          style: const TextStyle(color: Colors.white),
-        ),
-        actions: [
-          if (provider.selectedIds.isNotEmpty)
-            IconButton(
-              icon: const Icon(Icons.person_add_alt_1, color: Colors.white),
-              onPressed: () => _showAssignDialog(context),
+        title: Center(child: Text( provider.selectedIds.isEmpty
+            ? 'Unassigned Customers'
+            : 'Selected: ${provider.selectedIds.length}',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+              letterSpacing: 1.2,
+            ))),
+          actions: [
+            if (provider.selectedIds.isNotEmpty)
+              IconButton(
+                icon: const Icon(Icons.person_add_alt_1, color: Colors.white),
+                onPressed: () => _showAssignDialog(context),
+              ),
+          ],
+        centerTitle: true,
+        elevation: 6,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF5B86E5), Color(0xFF36D1DC)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-        ],
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
+      // appBar: AppBar(
+      //   backgroundColor: Colors.indigo,
+      //   title: Text(
+      //     provider.selectedIds.isEmpty
+      //         ? 'Unassigned Customers'
+      //         : 'Selected: ${provider.selectedIds.length}',
+      //     style: const TextStyle(color: Colors.white),
+      //   ),
+      //   actions: [
+      //     if (provider.selectedIds.isNotEmpty)
+      //       IconButton(
+      //         icon: const Icon(Icons.person_add_alt_1, color: Colors.white),
+      //         onPressed: () => _showAssignDialog(context),
+      //       ),
+      //   ],
+      // ),
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
