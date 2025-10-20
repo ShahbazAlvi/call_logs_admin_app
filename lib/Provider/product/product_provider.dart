@@ -156,6 +156,7 @@ class ProductProvider with ChangeNotifier {
       final responseBody = await http.Response.fromStream(response);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
+        fetchProducts();
         print('✅ Product added: ${responseBody.body}');
       } else {
         print('❌ Failed: ${response.statusCode} - ${responseBody.body}');

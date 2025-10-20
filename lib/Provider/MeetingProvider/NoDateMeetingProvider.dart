@@ -13,41 +13,6 @@ class NoDateMeetingProvider with ChangeNotifier {
   List<MeetingData> get meetings => _meetings;
   bool get isLoading => _isLoading;
 
-  // Future<void> fetchMeetings() async {
-  //   _isLoading = true;
-  //   notifyListeners();
-  //
-  //   const url = 'https://call-logs-backend.vercel.app/api/meetings/no-follow-date';
-  //
-  //   try {
-  //     final prefs = await SharedPreferences.getInstance();
-  //     final token = prefs.getString('token');
-  //
-  //     if (token == null) {
-  //       print("❌ No token found for calendar meetings");
-  //       return;
-  //     }
-  //     final response = await http.get(
-  //       Uri.parse(url),
-  //       headers: {
-  //         'Authorization': 'Bearer $token',
-  //       },
-  //     );
-  //
-  //     if (response.statusCode == 200) {
-  //       final decoded = json.decode(response.body);
-  //       final model = NoDateMeetingModel.fromJson(decoded);
-  //       _meetings = model.data;
-  //     } else {
-  //       debugPrint('❌ Error fetching meetings: ${response.body}');
-  //     }
-  //   } catch (e) {
-  //     debugPrint('⚠️ Exception: $e');
-  //   }
-  //
-  //   _isLoading = false;
-  //   notifyListeners();
-  // }
   Future<void> fetchMeetings() async {
     _isLoading = true;
     notifyListeners();
@@ -206,5 +171,12 @@ class NoDateMeetingProvider with ChangeNotifier {
       debugPrint("⚠️ Error updating meeting: $e");
     }
   }
+
+
+
+
+
+
+
 
 }

@@ -97,18 +97,51 @@ class _CompanyListScreenState extends State<CompanyListScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.indigo,
+        title: const Text(
+          "Customers List",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+            letterSpacing: 1.2,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 6,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF5B86E5), Color(0xFF36D1DC)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
         iconTheme: const IconThemeData(color: Colors.white),
-        title: Center(child: const Text('Customers List',style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: (){
-              Navigator.push(context,MaterialPageRoute(builder:(context)=>AddCustomerScreen()));
-            }
-          )
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: ElevatedButton.icon(
+              onPressed: () {
+                Navigator.push(context,MaterialPageRoute(builder:(context)=>AddCustomerScreen()));
+              },
+              icon: const Icon(Icons.add_circle_outline, color: Colors.white),
+              label: const Text(
+                "Add Customer",
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.transparent,
+                shadowColor: Colors.transparent,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
+
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())
           : provider.errorMessage.isNotEmpty

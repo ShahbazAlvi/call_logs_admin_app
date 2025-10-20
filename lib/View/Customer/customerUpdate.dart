@@ -37,13 +37,26 @@ class _AddCustomerScreenState extends State<UpdateCustomerScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.indigo,
-        iconTheme: const IconThemeData(color: Colors.white),
-        title: Text(
-          widget.customerId == null ? 'Add Customer' : 'Update Customer',
-          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        title: Center(child: const Text('Update Customer',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+              letterSpacing: 1.2,
+            )),
         ),
         centerTitle: true,
+        elevation: 6,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF5B86E5), Color(0xFF36D1DC)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: provider.isLoading
           ? const Center(child: CircularProgressIndicator())

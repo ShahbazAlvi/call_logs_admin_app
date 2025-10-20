@@ -27,9 +27,11 @@ class _LoginScreenState extends State<LoginScreen> {
               Text('Admin Login',style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
               Text("Login to continue"),
               SizedBox(height: screenHeight*0.02,),
-              AppTextField(controller: loginProvider.emailController, label: 'Email',icon: Icons.email,),
+              AppTextField(controller: loginProvider.emailController, label: 'Email',icon: Icons.email,
+                validator: (value) => value!.isEmpty ? 'Enter Email' : null,),
               SizedBox(height: screenHeight*0.02,),
-              AppTextField(controller: loginProvider.passwordController, label: 'password',icon: Icons.password,icons: Icons.visibility_off,),
+              AppTextField(controller: loginProvider.passwordController, label: 'password',icon: Icons.password,icons: Icons.visibility_off,
+                validator: (value) => value!.isEmpty ? 'Enter PassWord' : null,),
               SizedBox(height: screenHeight*0.02,),
               loginProvider.isLoading?
                   Center(

@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:infinity/compoents/AppButton.dart';
+import 'package:infinity/compoents/AppTextfield.dart';
 import 'package:provider/provider.dart';
 import 'package:infinity/model/staffModel.dart';
 import 'package:infinity/Provider/staff/StaffProvider.dart';
@@ -50,8 +52,26 @@ class _EditStaffScreenState extends State<EditStaffScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Edit Staff"),
-        backgroundColor: Colors.indigo,
+        title: Center(child: const Text('Edit Staff',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+              letterSpacing: 1.2,
+            )),
+        ),
+        centerTitle: true,
+        elevation: 6,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF5B86E5), Color(0xFF36D1DC)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -77,62 +97,38 @@ class _EditStaffScreenState extends State<EditStaffScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: "Name"),
-                validator: (v) => v!.isEmpty ? 'Enter name' : null,
-              ),
-              TextFormField(
-                controller: _emailController,
-                decoration: const InputDecoration(labelText: "Email"),
-                validator: (v) => v!.isEmpty ? 'Enter email' : null,
-              ),
-              TextFormField(
-                controller: _numberController,
-                decoration: const InputDecoration(labelText: "Number"),
-                validator: (v) => v!.isEmpty ? 'Enter number' : null,
-              ),
-              TextFormField(
-                controller: _departmentController,
-                decoration: const InputDecoration(labelText: "Department"),
-                validator: (v) => v!.isEmpty ? 'Enter department' : null,
-              ),
-              TextFormField(
-                controller: _addressController,
-                decoration: const InputDecoration(labelText: "Address"),
-                validator: (v) => v!.isEmpty ? 'Enter address' : null,
-              ),
+              AppTextField(controller:_nameController, label:"Name",validator: (v) => v!.isEmpty ? 'Enter name' : null,),
+              const SizedBox(height: 10),
+              AppTextField(controller: _emailController, label:"Email", validator: (v) => v!.isEmpty ? 'Enter email' : null,),
+              const SizedBox(height: 10),
+              AppTextField(controller:_numberController, label: "Number", validator: (v) => v!.isEmpty ? 'Enter number' : null,),
+              const SizedBox(height: 10),
+              AppTextField(controller: _departmentController, label: "Department",validator: (v) => v!.isEmpty ? 'Enter department' : null,),
+              const SizedBox(height: 10),
+              AppTextField(controller: _addressController,label: "Address",validator: (v) => v!.isEmpty ? 'Enter address' : null,),
+
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    await provider.updateStaff(
-                      id: widget.staff.sId!,
-                      username: _nameController.text,
-                      email: _emailController.text,
-                      number: _numberController.text,
-                      department: _departmentController.text,
-                      address: _addressController.text,
-                      image: _image,
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Staff updated successfully!"),
-                        backgroundColor: Colors.green,
-                      ),
-                    );
-                    Navigator.pop(context);
-                  }
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.indigo,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                ),
-                child: const Text(
-                  "Update Staff",
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
+              AppButton(title: "Update Staff", press: ()async{
+                if (_formKey.currentState!.validate()) {
+                  await provider.updateStaff(
+                    id: widget.staff.sId!,
+                    username: _nameController.text,
+                    email: _emailController.text,
+                    number: _numberController.text,
+                    department: _departmentController.text,
+                    address: _addressController.text,
+                    image: _image,
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text("Staff updated successfully!"),
+                      backgroundColor: Colors.green,
+                    ),
+                  );
+                  Navigator.pop(context);
+                }
+              },
+                  width: double.infinity),
             ],
           ),
         ),

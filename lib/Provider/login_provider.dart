@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart'as http;
 import 'package:infinity/View/home/dashboard_screen.dart';
+import 'package:infinity/View/splashScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../View/bottombar/BottomBar.dart';
@@ -44,10 +45,11 @@ class LoginProvider with ChangeNotifier{
           message = "Login successful!";
           final prefs = await SharedPreferences.getInstance();
           await prefs.setString('token', data["token"]);
+          await prefs.setString('username',data['user']['username']);
           await prefs.setString('user', jsonEncode(data["user"]));
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => BottombarScreen()),
+            MaterialPageRoute(builder: (context) => Splashscreen()),
           );
         }
         else{
