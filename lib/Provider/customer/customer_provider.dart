@@ -14,7 +14,8 @@ class CompanyProvider with ChangeNotifier {
   List<Datum> companies = [];
   String message='';
   File? companyLogo;
-  String? selectedStaffId;
+  String? selectedStaffName; // ✅ use name instead of ID
+
   String? selectedProductId;
 
 
@@ -172,7 +173,9 @@ class CompanyProvider with ChangeNotifier {
       request.fields['city'] = cityController.text;
       request.fields['email'] = emailController.text;
       request.fields['phoneNumber'] = phoneController.text;
-      request.fields['assignedStaff'] = selectedStaffId ?? '';
+      //request.fields['assignedStaff'] = selectedStaffId ?? '';
+      request.fields['assignedStaff'] = selectedStaffName ?? '';
+
 
       //request.fields['assignedStaff'] = assignedStaffController.text;
       //request.fields['assignedProducts'] = assignedProductsController.text;
@@ -209,6 +212,7 @@ class CompanyProvider with ChangeNotifier {
         message = '✅ Customer created successfully';
       } else {
         message = '❌ Failed: ${response.statusCode}\n$respStr';
+        print("$message");
       }
     } catch (e) {
       message = 'Error: $e';
@@ -226,7 +230,7 @@ class CompanyProvider with ChangeNotifier {
     emailController.clear();
     phoneController.clear();
     //assignedStaffController.clear();
-    selectedStaffId = null;
+    selectedStaffName = null;
    // assignedProductsController.clear();
     selectedProductId = null;
 
@@ -270,7 +274,8 @@ class CompanyProvider with ChangeNotifier {
       request.fields['city'] = cityController.text.trim();
       request.fields['email'] = emailController.text.trim();
       request.fields['phoneNumber'] = phoneController.text.trim();
-      request.fields['assignedStaff'] = selectedStaffId ?? '';
+     // request.fields['assignedStaff'] = selectedStaffId ?? '';
+      request.fields['assignedStaff'] = selectedStaffName ?? '';
       request.fields['assignedProducts'] = selectedProductId ?? '';
 
       // ✅ Multiple persons
@@ -337,7 +342,9 @@ class CompanyProvider with ChangeNotifier {
         emailController.text = data['email'] ?? '';
         phoneController.text = data['phoneNumber'] ?? '';
 
-        selectedStaffId = data['assignedStaff']?['_id'];
+       // selectedStaffId = data['assignedStaff']?['_id'];
+        selectedStaffName = data['assignedStaff'] ?? ''; // ✅ name directly
+
         selectedProductId = data['assignedProducts']?['_id'];
 
         personsList = [];

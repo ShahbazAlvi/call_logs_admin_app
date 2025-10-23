@@ -9,6 +9,7 @@ import 'package:table_calendar/table_calendar.dart';
 
 
 import '../../Provider/dashboard_provider.dart';
+import '../Activity_Track/Activity_Track_Screen.dart';
 import '../AssignScreen/AssignCustomer.dart';
 import '../Auths/Login_screen.dart';
 import '../Customer/customer_list.dart';
@@ -203,6 +204,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.history_outlined, color: Color(0xFF5B86E5)),
+              title: const Text('Activity Track '),
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => ActivityTrackScreen()));
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.settings, color: Color(0xFF5B86E5)),
               title: const Text('Settings'),
               onTap: () {
@@ -275,10 +284,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           onTap: (){Navigator.push(context,MaterialPageRoute(builder: (context)=>CompanyListScreen()));},
                             child: AnimatedDashboardCard(icon: Icons.person, title:'Customer', count:provider.totalCustomers.toString(), bcolor:Colors.green)),
                         GestureDetector(
-                            onTap: (){Navigator.push(context,MaterialPageRoute(builder: (context)=>ProductScreen()));},
+                            onTap:userRole == 'admin'?
+                                (){Navigator.push(context,MaterialPageRoute(builder: (context)=>ProductScreen()));}:() {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Access denied: Admins only"),
+                                  backgroundColor: Colors.redAccent,
+                                ),
+                              );
+                            },
                             child: AnimatedDashboardCard(icon: Icons.shop, title:'Products', count:provider.totalProducts.toString(), bcolor:Colors.red)),
                         GestureDetector(
-                            onTap: (){Navigator.push(context,MaterialPageRoute(builder: (context)=>StaffScreen()));},
+                            onTap:userRole == 'admin'?
+                                (){Navigator.push(context,MaterialPageRoute(builder: (context)=>StaffScreen()));}:() {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text("Access denied: Admins only"),
+                                  backgroundColor: Colors.redAccent,
+                                ),
+                              );
+                            },
                             child: AnimatedDashboardCard(icon: Icons.people_alt, title:'Staff', count:provider.totalStaffs.toString(), bcolor:Colors.blue)),
                         AnimatedDashboardCard(icon: Icons.account_balance_wallet, title:'Transactions', count:provider.totalTransactions.toString(), bcolor:Colors.orange)
 

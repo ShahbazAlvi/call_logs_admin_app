@@ -136,7 +136,7 @@ Future<void>DeleteStaff(String staffId)async{
       var responseBody = await response.stream.bytesToString();
       var jsonData = json.decode(responseBody);
 
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200 || response.statusCode == 201) {
         message = jsonData['message'] ?? 'Staff added successfully';
       } else {
         message = jsonData['message'] ?? 'Failed to add staff';

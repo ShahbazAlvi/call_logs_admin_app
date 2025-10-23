@@ -155,7 +155,7 @@ class _AddCustomerScreenState extends State<UpdateCustomerScreen> {
                     labelText: 'Assigned Staff',
                     border: OutlineInputBorder(),
                   ),
-                  value: provider.selectedStaffId,
+                  value: provider.selectedStaffName,
                   items: staffList.map((staff) {
                     return DropdownMenuItem<String>(
                       value: staff.sId,
@@ -163,7 +163,7 @@ class _AddCustomerScreenState extends State<UpdateCustomerScreen> {
                     );
                   }).toList(),
                   onChanged: (value) {
-                    provider.selectedStaffId = value;
+                    provider.selectedStaffName = value;
                     provider.notifyListeners();
                   },
                 );

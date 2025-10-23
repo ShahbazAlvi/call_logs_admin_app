@@ -1,4 +1,6 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:infinity/View/Auths/Login_screen.dart';
 import 'package:infinity/compoents/AppButton.dart';
 import 'package:infinity/compoents/AppTextfield.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +83,29 @@ class _SignUpState extends State<SignUp> {
                       );
                     },
                     width: double.infinity,
-                  )
+                  ),
+                  const SizedBox(height: 20),
+                  RichText(text: TextSpan(
+                    text: "Already have an account?",
+                    style: const TextStyle(
+                      color: Colors.black87,
+                      fontSize: 16,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: 'Sign In',
+                        style: const TextStyle(
+                          color: Colors.blue, // clickable text color
+                          fontWeight: FontWeight.bold,
+                        ),
+                        recognizer: TapGestureRecognizer()
+                          ..onTap = () {
+                            // 👇 navigate to your sign-up screen
+                            Navigator.pushReplacement(context,MaterialPageRoute(builder:(context)=>LoginScreen()));
+                          },
+                      ),
+                    ],
+                  ))
 
                 ],
               ),

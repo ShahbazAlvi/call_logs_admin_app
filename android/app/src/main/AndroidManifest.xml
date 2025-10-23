@@ -7,7 +7,7 @@
 
 
     <application
-        android:label="infinity"
+        android:label="Call Logs"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
