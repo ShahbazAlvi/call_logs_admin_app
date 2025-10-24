@@ -203,6 +203,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     MaterialPageRoute(builder: (context) => UpcomingMeetingsScreen()));
               },
             ),
+            if (userRole == 'admin')
             ListTile(
               leading: const Icon(Icons.history_outlined, color: Color(0xFF5B86E5)),
               title: const Text('Activity Track '),

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:infinity/Provider/CustomersTrackProvider/FollowUpTrackProvider.dart';
+import 'package:infinity/Provider/CustomersTrackProvider/StaffTrackProvider.dart';
 import 'package:infinity/Provider/login_provider.dart';
 import 'package:infinity/View/Auths/Login_screen.dart';
 import 'package:infinity/View/home/dashboard_screen.dart';
@@ -6,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import 'Provider/AssignCustomerProvider/AssignProvider.dart';
 import 'Provider/CustomersTrackProvider/CustomerTrackProvider.dart';
+import 'Provider/CustomersTrackProvider/MeetingTrackProvider.dart';
 import 'Provider/FollowUp/FollowupProvider.dart';
 import 'Provider/MeetingProvider/NoDateMeetingProvider.dart';
 import 'Provider/MeetingProvider/Meeting_provider.dart';
@@ -32,6 +35,10 @@ void main() {
       ChangeNotifierProvider(create: (_) => CallLogsProvider()),
       ChangeNotifierProvider(create: (_) => SignUpProvider()),
       ChangeNotifierProvider(create: (_) => CustomersTrackProvider()),
+      ChangeNotifierProvider(create: (_) => MeetingTrackProvider()),
+      ChangeNotifierProvider(create: (_) => FollowUpTrackProvider()),
+      ChangeNotifierProvider(create: (_) => StaffTrackProvider()),
+
     ],
     child: MyApp(),)
   );

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'CustomersTrackScreen.dart';
+import 'FollowUpTrackScreen.dart';
+import 'MeetingTrackScreen.dart';
+import 'StaffTrackScreen.dart';
 
 class ActivityTrackScreen extends StatefulWidget {
   const ActivityTrackScreen({super.key});
@@ -50,15 +53,21 @@ class _ActivityTrackScreenState extends State<ActivityTrackScreen> {
                     child: containerBuilder(icon: Icons.people, title:'Customers Track', details: 'Monitor Customer Create, Update and assignments')),
                 SizedBox(height: 10,),
                 GestureDetector(
-                    onTap: (){},
+                    onTap: (){
+                      Navigator.push(context,MaterialPageRoute(builder: (context)=>MeetingTrackScreen()));
+                    },
                     child: containerBuilder(icon: Icons.handshake, title:'Meeting Track', details: 'Track meeting schedules and progress')),
                 SizedBox(height: 10,),
                 GestureDetector(
-                    onTap: (){},
+                    onTap: (){
+                      Navigator.push(context,MaterialPageRoute(builder: (context)=>FollowUpTrackScreen()));
+                    },
                     child: containerBuilder(icon: Icons.note_alt, title:'Follow Up Track', details: 'See recent follow-ups and status')),
                 SizedBox(height: 10,),
                 GestureDetector(
-                    onTap: (){},
+                    onTap: (){
+                      Navigator.push(context,MaterialPageRoute(builder: (context)=>StaffTrackScreen()));
+                    },
                     child: containerBuilder(icon: Icons.person, title:'Staff Track', details: 'Monitor staff activity and engagement'))
               ],
             ),

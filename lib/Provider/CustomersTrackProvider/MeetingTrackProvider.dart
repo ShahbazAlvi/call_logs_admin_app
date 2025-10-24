@@ -1,23 +1,22 @@
 import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../model/CustomersTrackModel.dart';
-import 'package:http/http.dart'as http;
+import '../../model/MeetingTrackModel.dart';
 
-class CustomersTrackProvider with ChangeNotifier {
+
+
+class MeetingTrackProvider with ChangeNotifier {
   bool isLoading = false;
-  List<CustomerData> allCustomers = [];
-  List<CustomerData> filteredCustomers = [];
+  List<MeetingData> allMeetings = [];
+  List<MeetingData> filteredMeetings = [];
 
-  // 🔹 Filters
+  // Filters
   String? selectedStaffId;
   String? selectedStaffName;
-
   String? selectedProductId;
   String? selectedProductName;
-
   String? selectedDateRange;
   String searchQuery = '';
 
@@ -28,7 +27,7 @@ class CustomersTrackProvider with ChangeNotifier {
     token = prefs.getString('token');
   }
 
-  Future<void> fetchCustomers({
+  Future<void> fetchMeetings({
     String? staffId,
     String? productId,
     String? date,
@@ -39,7 +38,7 @@ class CustomersTrackProvider with ChangeNotifier {
 
       if (token == null) await _loadToken();
 
-      String url = 'https://call-logs-backend.onrender.com/api/history/customers-track';
+      String url = 'https://call-logs-backend.onrender.com/api/history/meetings-track';
 
       List<String> params = [];
       if (staffId != null && staffId.isNotEmpty) params.add('staff=$staffId');
@@ -48,7 +47,7 @@ class CustomersTrackProvider with ChangeNotifier {
 
       if (params.isNotEmpty) url += '?${params.join('&')}';
 
-      debugPrint('🌍 Fetching URL: $url');
+      debugPrint('🌍 Fetching Meetings URL: $url');
 
       final response = await http.get(
         Uri.parse(url),
@@ -60,64 +59,67 @@ class CustomersTrackProvider with ChangeNotifier {
 
       if (response.statusCode == 200) {
         final jsonData = jsonDecode(response.body);
-        final model = CustomersTrackModel.fromJson(jsonData);
-        allCustomers = model.data;
-        filteredCustomers = model.data;
+        final model = MeetingTrackModel.fromJson(jsonData);
+        allMeetings = model.data;
+        filteredMeetings = model.data;
       } else {
         throw Exception('Failed: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint('❌ Error fetching customers: $e');
+      debugPrint('❌ Error fetching meetings: $e');
     } finally {
       isLoading = false;
       notifyListeners();
     }
   }
 
+  // 🔍 Search filter
   void setSearch(String value) {
     searchQuery = value;
     applyFilters();
   }
 
+  // Staff filter
   void setStaff(String? id, String? name) {
     selectedStaffId = id;
     selectedStaffName = name;
-    fetchCustomers(
+    fetchMeetings(
       staffId: selectedStaffId,
       productId: selectedProductId,
       date: selectedDateRange,
     );
   }
 
+  // Product filter
   void setProduct(String? id, String? name) {
     selectedProductId = id;
     selectedProductName = name;
-    fetchCustomers(
+    fetchMeetings(
       staffId: selectedStaffId,
       productId: selectedProductId,
       date: selectedDateRange,
     );
   }
 
+  // Date range filter
   void setDateRange(String? value) {
     selectedDateRange = value;
-    fetchCustomers(
+    fetchMeetings(
       staffId: selectedStaffId,
       productId: selectedProductId,
       date: selectedDateRange,
     );
   }
 
+  // Apply local filters (search + dropdowns)
   void applyFilters() {
-    filteredCustomers = allCustomers.where((c) {
+    filteredMeetings = allMeetings.where((m) {
       final matchesStaff =
-          selectedStaffName == null || c.staff == selectedStaffName;
+          selectedStaffName == null || m.assignedStaff?.username == selectedStaffName;
       final matchesProduct =
-          selectedProductName == null || c.product == selectedProductName;
-      final matchesSearch = c.company
-          .toLowerCase()
-          .contains(searchQuery.toLowerCase()) ||
-          c.city.toLowerCase().contains(searchQuery.toLowerCase());
+          selectedProductName == null || m.assignedProducts?.name == selectedProductName;
+      final matchesSearch = m.companyName.toLowerCase().contains(searchQuery.toLowerCase()) ||
+          m.persons.any((p) => p.fullName?.toLowerCase().contains(searchQuery.toLowerCase()) ?? false);
       return matchesStaff && matchesProduct && matchesSearch;
     }).toList();
     notifyListeners();
