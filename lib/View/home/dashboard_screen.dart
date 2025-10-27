@@ -20,6 +20,9 @@ import '../followUpScreen/FollowUpScreen.dart';
 import '../monthly chats.dart';
 import '../products/product_screen.dart';
 import '../staff/staffListScreen.dart';
+import 'package:percent_indicator/circular_percent_indicator.dart';
+
+
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -314,115 +317,69 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 SizedBox(height: 20,),
                 Text("Performance Summary",style: TextStyle(fontWeight: FontWeight.bold),),
-        Padding(
-          padding: const EdgeInsets.all(8),
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFFEEF2FF), Color(0xFFFFFFFF)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(20),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.indigo.withOpacity(0.15),
-                  blurRadius: 10,
-                  offset: const Offset(0, 4),
-                ),
-              ],
-            ),
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Chart
-                SizedBox(
-                  height: 240,
-                  child: provider.isLoading
-                      ? const Center(child: CircularProgressIndicator())
-                      : PieChart(
-                    PieChartData(
-                      sectionsSpace: 3,
-                      centerSpaceRadius: 55,
-                      borderData: FlBorderData(show: false),
-                      sections: provider.chartData
-                          .map(
-                            (item) => PieChartSectionData(
-                          color: item["color"],
-                          value: item["value"],
-                          title:
-                          "${item["value"].toStringAsFixed(1)}%", // show % in each section
-                          radius: 65,
-                          titleStyle: const TextStyle(
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                            shadows: [
-                              Shadow(
-                                color: Colors.black26,
-                                blurRadius: 2,
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                          .toList(),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-
-                // Divider
-                Container(
-                  height: 1,
-                  width: double.infinity,
-                  color: Colors.indigo.withOpacity(0.2),
-                  margin: const EdgeInsets.symmetric(vertical: 12),
-                ),
-
-                // Legends Section
-                Wrap(
-                  alignment: WrapAlignment.center,
-                  spacing: 18,
-                  runSpacing: 10,
-                  children: provider.chartData
-                      .map((item) => Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 6),
+                Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Container(
+                    width: double.infinity,
                     decoration: BoxDecoration(
-                      color: item["color"].withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 14,
-                          height: 14,
-                          decoration: BoxDecoration(
-                            color: item["color"],
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          "${item["title"]} (${item["value"].toStringAsFixed(1)}%)",
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black87,
-                          ),
+                      gradient: const LinearGradient(
+                        colors: [Color(0xFFEEF2FF), Color(0xFFFFFFFF)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.indigo.withOpacity(0.15),
+                          blurRadius: 10,
+                          offset: const Offset(0, 4),
                         ),
                       ],
                     ),
-                  ))
-                      .toList(),
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                    child: Column(
+                      children: [
+                        provider.isLoading
+                            ? const CircularProgressIndicator()
+                            : Wrap(
+                          alignment: WrapAlignment.center,
+                          spacing: 20,      // space between graphs (horizontally)
+                          runSpacing: 20,   // space between rows (vertically)
+                          children: [
+                            _buildProgressCircle(
+                              label: "Success Rate",
+                              currentValue: provider.successRate,
+                              maxValue: 100,
+                              color: const Color(0xFF4CAF50),
+                            ),
+                            _buildProgressCircle(
+                              label: "Pending Calls",
+                              currentValue: provider.pendingCalls,
+                              maxValue: 100,
+                              color: const Color(0xFF2196F3),
+                            ),
+                            _buildProgressCircle(
+                              label: "Follow Ups",
+                              currentValue: provider.followUps,
+                              maxValue: 100,
+                              color: Colors.orange,
+                            ),
+                            _buildProgressCircle(
+                              label: "Meetings",
+                              currentValue: provider.totalMeetings,
+                              maxValue: 100,
+                              color: const Color(0xFFF44336),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ],
-            ),
-          ),
-        ),
+
+
+
+
 
                 SizedBox(height: 20),
                 Text("Follow-up Meeting",style: TextStyle(fontWeight: FontWeight.bold),),
@@ -482,6 +439,49 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ],
       ))
           .toList(),
+    );
+  }
+
+
+  // Function to build circular indicator
+  Widget _buildProgressCircle({
+    required String label,
+    required double currentValue,
+    required double maxValue,
+    required Color color,
+  }) {
+    final percent = (currentValue / maxValue).clamp(0.0, 1.0);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        CircularPercentIndicator(
+          radius: 40.0,
+          lineWidth: 8.0,
+          percent: percent,
+          center: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                currentValue.toStringAsFixed(0),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+              ),
+              Text(
+                "/${maxValue.toStringAsFixed(0)}",
+                style: const TextStyle(fontSize: 10, color: Colors.grey),
+              ),
+            ],
+          ),
+          progressColor: color,
+          backgroundColor: color.withOpacity(0.2),
+          circularStrokeCap: CircularStrokeCap.round,
+        ),
+        const SizedBox(height: 6),
+        Text(
+          label,
+          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+        ),
+      ],
     );
   }
 
