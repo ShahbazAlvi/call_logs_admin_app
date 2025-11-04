@@ -85,7 +85,7 @@ class FollowUpProvider with ChangeNotifier {
       final validStatuses = {
         'Follow Up Required': 'Hold',
         'In Progress': 'Hold',
-        'Completed': 'Complete',
+        'Completed': 'Completed',
         'Closed': 'Close',
       };
 

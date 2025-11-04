@@ -210,6 +210,8 @@ class CompanyProvider with ChangeNotifier {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         message = '✅ Customer created successfully';
+        fetchCompanies();
+
       } else {
         message = '❌ Failed: ${response.statusCode}\n$respStr';
         print("$message");
@@ -274,7 +276,6 @@ class CompanyProvider with ChangeNotifier {
       request.fields['city'] = cityController.text.trim();
       request.fields['email'] = emailController.text.trim();
       request.fields['phoneNumber'] = phoneController.text.trim();
-     // request.fields['assignedStaff'] = selectedStaffId ?? '';
       request.fields['assignedStaff'] = selectedStaffName ?? '';
       request.fields['assignedProducts'] = selectedProductId ?? '';
 

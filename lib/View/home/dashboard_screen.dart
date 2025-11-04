@@ -364,12 +364,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               maxValue: 100,
                               color: Colors.orange,
                             ),
-                            _buildProgressCircle(
-                              label: "Meetings",
-                              currentValue: provider.totalMeetings,
-                              maxValue: 100,
-                              color: const Color(0xFFF44336),
-                            ),
+                            // _buildProgressCircle(
+                            //   label: "Meetings",
+                            //   currentValue: provider.totalMeetings,
+                            //   maxValue: 100,
+                            //   color: const Color(0xFFF44336),
+                            // ),
                           ],
                         ),
                       ],

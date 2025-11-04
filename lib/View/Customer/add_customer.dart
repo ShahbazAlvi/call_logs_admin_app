@@ -140,41 +140,6 @@ class _AddCustomerScreenState extends State<AddCustomerScreen> {
             ),
 
             const Divider(height: 40),
-            //_buildTextField(provider.assignedStaffController, 'Assigned Staff ID'),
-            // Consumer<StaffProvider>(
-            //   builder: (context, staffProvider, _) {
-            //     final staffList = staffProvider.staffs;
-            //
-            //     if (staffProvider.isLoading) {
-            //       return const Center(child: CircularProgressIndicator());
-            //     }
-            //
-            //     if (staffList.isEmpty) {
-            //       return const Text('No staff available');
-            //     }
-            //
-            //     return Padding(
-            //       padding: const EdgeInsets.symmetric(vertical: 6),
-            //       child: DropdownButtonFormField<String>(
-            //         decoration: const InputDecoration(
-            //           labelText: 'Assigned Staff',
-            //           border: OutlineInputBorder(),
-            //         ),
-            //         value: provider.selectedStaffId,
-            //         items: staffList.map((staff) {
-            //           return DropdownMenuItem<String>(
-            //             value: staff.username, // ID for backend
-            //             child: Text(staff.username ?? 'Unnamed Staff'), // show name
-            //           );
-            //         }).toList(),
-            //         onChanged: (value) {
-            //           provider.selectedStaffName = value;
-            //           provider.notifyListeners();
-            //         },
-            //       ),
-            //     );
-            //   },
-            // ),
             Consumer<StaffProvider>(
               builder: (context, staffProvider, _) {
                 final staffList = staffProvider.staffs;
