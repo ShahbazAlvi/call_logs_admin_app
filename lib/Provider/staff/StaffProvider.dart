@@ -138,6 +138,8 @@ Future<void>DeleteStaff(String staffId)async{
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         message = jsonData['message'] ?? 'Staff added successfully';
+        fetchStaff();
+
       } else {
         message = jsonData['message'] ?? 'Failed to add staff';
       }

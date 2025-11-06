@@ -8,7 +8,7 @@ import 'customer detail.dart';
 import 'customerUpdate.dart';
 
 class CompanyListScreen extends StatefulWidget {
-  const CompanyListScreen({super.key});     
+  const CompanyListScreen({super.key});
 
   @override
   State<CompanyListScreen> createState() => _CompanyListScreenState();

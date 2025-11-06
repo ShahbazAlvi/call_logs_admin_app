@@ -266,148 +266,155 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       body: SafeArea(
         child:provider.isLoading
-            ? const Center(child: CircularProgressIndicator()):
-        SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFF5F8FF),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Wrap(
-                      spacing: 16,
-                      runSpacing: 16,
-                      children: [
-                        GestureDetector(
-                          onTap: (){Navigator.push(context,MaterialPageRoute(builder: (context)=>CompanyListScreen()));},
-                            child: AnimatedDashboardCard(icon: Icons.person, title:'Customer', count:provider.totalCustomers.toString(), bcolor:Colors.green)),
-                        GestureDetector(
-                            onTap:userRole == 'admin'?
-                                (){Navigator.push(context,MaterialPageRoute(builder: (context)=>ProductScreen()));}:() {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Access denied: Admins only"),
-                                  backgroundColor: Colors.redAccent,
-                                ),
-                              );
-                            },
-                            child: AnimatedDashboardCard(icon: Icons.shop, title:'Products', count:provider.totalProducts.toString(), bcolor:Colors.red)),
-                        GestureDetector(
-                            onTap:userRole == 'admin'?
-                                (){Navigator.push(context,MaterialPageRoute(builder: (context)=>StaffScreen()));}:() {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Access denied: Admins only"),
-                                  backgroundColor: Colors.redAccent,
-                                ),
-                              );
-                            },
-                            child: AnimatedDashboardCard(icon: Icons.people_alt, title:'Staff', count:provider.totalStaffs.toString(), bcolor:Colors.blue)),
-                        AnimatedDashboardCard(icon: Icons.account_balance_wallet, title:'Transactions', count:provider.totalTransactions.toString(), bcolor:Colors.orange)
+            ? const Center(child: CircularProgressIndicator())
 
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20,),
-                Text("Performance Summary",style: TextStyle(fontWeight: FontWeight.bold),),
-                Padding(
-                  padding: const EdgeInsets.all(8),
-                  child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFFEEF2FF), Color(0xFFFFFFFF)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.indigo.withOpacity(0.15),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-                    child: Column(
-                      children: [
-                        provider.isLoading
-                            ? const CircularProgressIndicator()
-                            : Wrap(
-                          alignment: WrapAlignment.center,
-                          spacing: 20,      // space between graphs (horizontally)
-                          runSpacing: 20,   // space between rows (vertically)
-                          children: [
-                            _buildProgressCircle(
-                              label: "Success Rate",
-                              currentValue: provider.successRate,
-                              maxValue: 100,
-                              color: const Color(0xFF4CAF50),
-                            ),
-                            _buildProgressCircle(
-                              label: "Pending Calls",
-                              currentValue: provider.pendingCalls,
-                              maxValue: 100,
-                              color: const Color(0xFF2196F3),
-                            ),
-                            _buildProgressCircle(
-                              label: "Follow Ups",
-                              currentValue: provider.followUps,
-                              maxValue: 100,
-                              color: Colors.orange,
-                            ),
-                            // _buildProgressCircle(
-                            //   label: "Meetings",
-                            //   currentValue: provider.totalMeetings,
-                            //   maxValue: 100,
-                            //   color: const Color(0xFFF44336),
-                            // ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-
-
-
-
-                SizedBox(height: 20),
-                Text("Follow-up Meeting",style: TextStyle(fontWeight: FontWeight.bold),),
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: CalendarWidget(), // 👈 use calendar here
-                ),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: provider.monthlyTrends.isEmpty
-                      ? const Center(child: Text("No data available"))
-                      : MonthlyTrendsChart(
-                    totalCalls: provider.totalCalls,
-                    monthlyData: provider.monthlyTrends,
-                  ),
-                ),
-                SizedBox(height: 20),
-            Padding(
+            :
+        RefreshIndicator(
+          onRefresh: () async {
+            await provider.loadAllDashboardData();
+          },
+          child: SingleChildScrollView(
+            child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: WeeklyVolumeChart(
-                totalCalls: provider.totalWeeklyCalls,
-                weeklyData: provider.weeklyData,),
-            )
-              ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF5F8FF),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Wrap(
+                        spacing: 16,
+                        runSpacing: 16,
+                        children: [
+                          GestureDetector(
+                            onTap: (){Navigator.push(context,MaterialPageRoute(builder: (context)=>CompanyListScreen()));},
+                              child: AnimatedDashboardCard(icon: Icons.person, title:'Customer', count:provider.totalCustomers.toString(), bcolor:Colors.green)),
+                          GestureDetector(
+                              onTap:userRole == 'admin'?
+                                  (){Navigator.push(context,MaterialPageRoute(builder: (context)=>ProductScreen()));}:() {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Access denied: Admins only"),
+                                    backgroundColor: Colors.redAccent,
+                                  ),
+                                );
+                              },
+                              child: AnimatedDashboardCard(icon: Icons.shop, title:'Products', count:provider.totalProducts.toString(), bcolor:Colors.red)),
+                          GestureDetector(
+                              onTap:userRole == 'admin'?
+                                  (){Navigator.push(context,MaterialPageRoute(builder: (context)=>StaffScreen()));}:() {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Access denied: Admins only"),
+                                    backgroundColor: Colors.redAccent,
+                                  ),
+                                );
+                              },
+                              child: AnimatedDashboardCard(icon: Icons.people_alt, title:'Staff', count:provider.totalStaffs.toString(), bcolor:Colors.blue)),
+                          AnimatedDashboardCard(icon: Icons.account_balance_wallet, title:'Transactions', count:provider.totalTransactions.toString(), bcolor:Colors.orange)
+
+                        ],
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20,),
+                  Text("Performance Summary",style: TextStyle(fontWeight: FontWeight.bold),),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFFEEF2FF), Color(0xFFFFFFFF)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.indigo.withOpacity(0.15),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+                      child: Column(
+                        children: [
+                          provider.isLoading
+                              ? const CircularProgressIndicator()
+                              : Wrap(
+                            alignment: WrapAlignment.center,
+                            spacing: 20,      // space between graphs (horizontally)
+                            runSpacing: 20,   // space between rows (vertically)
+                            children: [
+                              _buildProgressCircle(
+                                label: "Success Rate",
+                                currentValue: provider.successRate,
+                                maxValue: 100,
+                                color: const Color(0xFF4CAF50),
+                              ),
+                              _buildProgressCircle(
+                                label: "Pending Calls",
+                                currentValue: provider.pendingCalls,
+                                maxValue: 100,
+                                color: const Color(0xFF2196F3),
+                              ),
+                              _buildProgressCircle(
+                                label: "Follow Ups",
+                                currentValue: provider.followUps,
+                                maxValue: 100,
+                                color: Colors.orange,
+                              ),
+                              // _buildProgressCircle(
+                              //   label: "Meetings",
+                              //   currentValue: provider.totalMeetings,
+                              //   maxValue: 100,
+                              //   color: const Color(0xFFF44336),
+                              // ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+
+
+
+
+
+                  SizedBox(height: 20),
+                  Text("Follow-up Meeting",style: TextStyle(fontWeight: FontWeight.bold),),
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: CalendarWidget(), // 👈 use calendar here
+                  ),
+                  SizedBox(height: 20),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: provider.monthlyTrends.isEmpty
+                        ? const Center(child: Text("No data available"))
+                        : MonthlyTrendsChart(
+                      totalCalls: provider.totalCalls,
+                      monthlyData: provider.monthlyTrends,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: WeeklyVolumeChart(
+                  totalCalls: provider.totalWeeklyCalls,
+                  weeklyData: provider.weeklyData,),
+              )
+                ],
+              ),
             ),
-          ),
-            ),
+              ),
+        ),
           ),
 
 

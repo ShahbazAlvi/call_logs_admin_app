@@ -94,9 +94,17 @@ class _StaffScreenState extends State<StaffScreen> {
                 children: [
                   CircleAvatar(
                     radius: 30,
-                    backgroundImage: NetworkImage(staff.image?.url ?? ''),
-                    backgroundColor: Colors.grey[200],
+                    backgroundColor: Colors.grey[300],
+                    backgroundImage: (staff.image?.url != null &&
+                        staff.image!.url!.isNotEmpty)
+                        ? NetworkImage(staff.image!.url!)
+                        : null,
+                    child: (staff.image?.url == null ||
+                        staff.image!.url!.isEmpty)
+                        ? const Icon(Icons.person, size: 30, color: Colors.white)
+                        : null,
                   ),
+
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(

@@ -18,6 +18,7 @@ import 'Provider/customer/customer_provider.dart';
 import 'Provider/dashboard_provider.dart';
 import 'Provider/product/product_provider.dart';
 import 'Provider/staff/StaffProvider.dart';
+import 'View/SplashScreenMain.dart';
 import 'View/splashScreen.dart';
 
 void main() {
@@ -57,7 +58,7 @@ class MyApp extends StatelessWidget {
 
         colorScheme: ColorScheme.fromSeed(seedColor: Color(0xFF5B86E5),),
       ),
-      home: Splashscreen()
+      home: OnboardingScreen()//Splashscreen()
     );
   }
 }
