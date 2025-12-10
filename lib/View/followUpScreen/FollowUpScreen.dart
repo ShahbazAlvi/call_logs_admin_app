@@ -453,11 +453,18 @@ class _FollowUpScreenState extends State<FollowUpScreen> {
                   // 👇 List of persons
                   ...persons.map((p) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 4),
-                    child: Text(
-                      '• ${p.fullName} (${p.phoneNumber})',
-                      style: const TextStyle(fontSize: 14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '• ${p.fullName}',
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                        Text(". ${p.phoneNumber}", style: const TextStyle(fontSize: 14),)
+                      ],
                     ),
                   )),
+
 
                   if (persons.isEmpty)
                     const Text('No person details available',
@@ -466,7 +473,6 @@ class _FollowUpScreenState extends State<FollowUpScreen> {
                   const Divider(),
 
                   _infoRow('🏷️ Designation', designation),
-                  _infoRow('👨‍💻 Refer to Staff', referToStaff),
                   _infoRow('🔗 Reference', reference),
                 ],
               ),

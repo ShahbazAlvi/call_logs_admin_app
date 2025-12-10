@@ -12,7 +12,7 @@ class CustomersTrackScreen extends StatefulWidget {
 
   @override
   State<CustomersTrackScreen> createState() => _CustomersTrackScreenState();
-}
+}  
 
 class _CustomersTrackScreenState extends State<CustomersTrackScreen> {
   final List<String> dateOptions = ['today', '1week', '14days', 'all'];
@@ -341,8 +341,7 @@ class _CustomersTrackScreenState extends State<CustomersTrackScreen> {
                       : ListView.builder(
                     itemCount: provider.filteredCustomers.length,
                     itemBuilder: (context, index) {
-                      final customer =
-                      provider.filteredCustomers[index];
+                      final customer = provider.filteredCustomers[index];
                       return Card(
                         child: ListTile(
                           title: Text(customer.company),

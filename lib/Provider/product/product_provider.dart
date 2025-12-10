@@ -8,7 +8,6 @@ import '../../model/productModel.dart';
 class ProductProvider with ChangeNotifier {
   bool isLoading = false;
   List<Data> products = [];
-
   Future<void> fetchProducts() async {
     const url = "https://call-logs-backend.onrender.com/api/products"; // 🔹 Replace with actual API
     isLoading = true;

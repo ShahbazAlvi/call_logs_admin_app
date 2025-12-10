@@ -104,11 +104,19 @@ class _ProductScreenState extends State<ProductScreen> {
           childAspectRatio: 0.6,
         ),
         itemBuilder: (context, index) {
+          // final product = provider.products[index];
+          // final imageUrl = product.image != null &&
+          //     product.image!.isNotEmpty
+          //     ? product.image!.first.url
+          //     : "https://via.placeholder.com/150";
           final product = provider.products[index];
-          final imageUrl = product.image != null &&
-              product.image!.isNotEmpty
-              ? product.image!.first.url
-              : "https://via.placeholder.com/150";
+          final imageUrl = (product.image != null &&
+              product.image!.isNotEmpty &&
+              product.image![0].url != null &&
+              product.image![0].url!.isNotEmpty)
+              ? product.image![0].url!
+              : "https://via.placeholder.com/150"; // fallback
+
 
           return Container(
             decoration: BoxDecoration(
@@ -132,11 +140,23 @@ class _ProductScreenState extends State<ProductScreen> {
                     topRight: Radius.circular(12),
                   ),
                   child: Image.network(
-                    imageUrl!,
+                    imageUrl,
                     height: 120,
                     width: double.infinity,
                     fit: BoxFit.cover,
-                  ),
+                    errorBuilder: (context, error, stack) => Container(
+                      height: 120,
+                      color: Colors.grey.shade300,
+                      child: const Icon(Icons.broken_image, size: 40, color: Colors.grey),
+                    ),
+                  )
+
+                  // Image.network(
+                  //   imageUrl!,
+                  //   height: 120,
+                  //   width: double.infinity,
+                  //   fit: BoxFit.cover,
+                  // ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(8.0),
