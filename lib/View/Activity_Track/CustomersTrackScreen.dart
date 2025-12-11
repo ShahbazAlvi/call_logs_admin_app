@@ -12,7 +12,7 @@ class CustomersTrackScreen extends StatefulWidget {
 
   @override
   State<CustomersTrackScreen> createState() => _CustomersTrackScreenState();
-}  
+}
 
 class _CustomersTrackScreenState extends State<CustomersTrackScreen> {
   final List<String> dateOptions = ['today', '1week', '14days', 'all'];
@@ -200,8 +200,8 @@ class _CustomersTrackScreenState extends State<CustomersTrackScreen> {
                 //   ),
                 // ),
                 SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
+                 // scrollDirection: Axis.horizontal,
+                  child: Column(
                     children: [
                       // 🔹 Staff Dropdown
                       Consumer<StaffProvider>(
@@ -219,7 +219,8 @@ class _CustomersTrackScreenState extends State<CustomersTrackScreen> {
                           return Padding(
                             padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
                             child: SizedBox(
-                              width: 180, // ✅ finite width
+                              width: double.infinity,
+                             // width: 180, // ✅ finite width
                               child: DropdownButtonFormField<String>(
                                 decoration: const InputDecoration(
                                   labelText: 'Assigned Staff',
@@ -258,7 +259,8 @@ class _CustomersTrackScreenState extends State<CustomersTrackScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
                         child: SizedBox(
-                          width: 220, // ✅ finite width
+                          width: double.infinity,
+                         // width: 220, // ✅ finite width
                           child: Consumer<ProductProvider>(
                             builder: (context, productProvider, _) {
                               final productList = productProvider.products;
@@ -309,7 +311,8 @@ class _CustomersTrackScreenState extends State<CustomersTrackScreen> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
                         child: SizedBox(
-                          width: 180, // ✅ finite width
+                          width: double.infinity,
+                        //        width: 180, // ✅ finite width
                           child: DropdownButtonFormField<String>(
                             decoration: const InputDecoration(
                               labelText: 'Date Range',

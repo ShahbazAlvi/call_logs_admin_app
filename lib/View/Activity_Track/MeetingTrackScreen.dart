@@ -71,8 +71,10 @@ class _MeetingTrackScreenState extends State<MeetingTrackScreen> {
 
                 // 🔽 Filters Row
                 SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
+                 // scrollDirection: Axis.horizontal,
+                 child:  Wrap(
+                    spacing: 12,
+                    runSpacing: 12,
                     children: [
                       // Staff dropdown
                       Consumer<StaffProvider>(
@@ -96,7 +98,7 @@ class _MeetingTrackScreenState extends State<MeetingTrackScreen> {
                         },
                       ),
 
-                      const SizedBox(width: 8),
+                     // const SizedBox(height: 5,),
 
                       // Product dropdown
                       Consumer<ProductProvider>(
@@ -120,7 +122,7 @@ class _MeetingTrackScreenState extends State<MeetingTrackScreen> {
                         },
                       ),
 
-                      const SizedBox(width: 8),
+                      //const SizedBox(width: 8),
 
                       // Date range dropdown
                       _buildDropdown(
@@ -199,7 +201,7 @@ class _MeetingTrackScreenState extends State<MeetingTrackScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
       child: SizedBox(
-        width: 200,
+        width: double.infinity,
         child: DropdownButtonFormField<String?>(
           decoration: InputDecoration(
             labelText: label,

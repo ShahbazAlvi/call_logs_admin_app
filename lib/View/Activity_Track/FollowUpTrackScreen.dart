@@ -64,8 +64,8 @@ class _FollowUpTrackScreenState extends State<FollowUpTrackScreen> {
 
                 // 🔽 Filters
                 SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
+                 // scrollDirection: Axis.horizontal,
+                  child: Column(
                     children: [
                       // Staff dropdown
                       Consumer<StaffProvider>(
@@ -191,7 +191,8 @@ class _FollowUpTrackScreenState extends State<FollowUpTrackScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 4),
       child: SizedBox(
-        width: 200,
+        width: double.infinity,
+       // width: 200,
         child: DropdownButtonFormField<String?>(
           decoration: InputDecoration(
             labelText: label,
